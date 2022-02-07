@@ -3,6 +3,8 @@ package com.newcore.wezy.ui.settings
 import android.os.Bundle
 import android.view.View
 import android.widget.RadioGroup
+import androidx.navigation.fragment.findNavController
+import com.newcore.wezy.R
 import com.newcore.wezy.databinding.FragmentSettingsBinding
 import com.newcore.wezy.shareprefrances.*
 import com.newcore.wezy.ui.BaseFragment
@@ -41,7 +43,12 @@ class SettingsFragment
                     defineLocationType =
                         when (i) {
                             rbGps.id -> DefineLocationType.Gps
-                            rbMap.id -> DefineLocationType.Maps
+                            rbMap.id -> {
+                                findNavController()
+                                    .navigate(R.id.action_settingsFragment_to_mapsFragment)
+                                
+                                DefineLocationType.Maps
+                            }
                             else -> DefineLocationType.Gps
                         }
 
