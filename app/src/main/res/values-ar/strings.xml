@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">wezy</string>
+    <string name="arabic">العربية</string>
+    <string name="english">الانجليزية</string>
+    <string name="no_internet_connection">لا يوجد اتصال بالانترنت</string>
+    <string name="celsius">درجة مئوية</string>
+    <string name="kelvin">كلفن</string>
+    <string name="fahrenheit">فهرنهايت</string>
+    <string name="gps">نظام تحديد المواقع</string>
+    <string name="map">خريطة</string>
+    <string name="meter_sec">متر / ثانية</string>
+    <string name="mile_hour">ميل / ساعة</string>
+    <string name="enable">تفعيل</string>
+    <string name="disable">تعطيل</string>
+    <string name="language">الغة</string>
+    <string name="temp_unit">وحدة درجة الحرارة</string>
+    <string name="location">تحديد الموقع</string>
+    <string name="wind_speed_unit">وحدة سرعة الرياح</string>
+    <string name="notification">الاشعارات</string>
+    <string name="settings">الاعدادات</string>
+    <string name="favorite">المفضل</string>
+    <string name="home">الصفحة الرئيسية</string>
+    <string name="alarm">الإنذار</string>
+</resources>
