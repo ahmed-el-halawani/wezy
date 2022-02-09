@@ -1,27 +1,97 @@
 package com.newcore.wezy.utils
 
 import android.app.Activity
+import android.content.Context
+import android.content.res.Configuration
 import android.content.res.Resources
-import android.os.Build
-import android.view.View
-import android.widget.AbsListView
-import android.widget.EditText
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
-import com.newcore.wezy.R
+import com.newcore.wezy.shareprefrances.Language
+import com.newcore.wezy.shareprefrances.TempUnit
+import com.newcore.wezy.shareprefrances.WindSpeedUnit
+import java.text.NumberFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 object ViewHelpers {
 
+    fun localeFromLanguage(language: Language):Locale{
+        return returnByLanguage(language,Locale("ar"),Locale.ENGLISH)
+    }
+
+    fun Number.numberLocalizer(language: Language):String{
+        return  NumberFormat.getInstance(localeFromLanguage(language)).format(this);
+    }
+
+
+    fun getTimeFromUnix(long: Long?,language: Language):String{
+        val timeStr =
+            SimpleDateFormat("hh:mm aa", localeFromLanguage(language))
+
+        return long?.let { timeStr.format(Date(it*1000)) }?:"00:00"
+    }
+
+    fun getDateFromUnix(long: Long?,language: Language):String{
+        val timeStr =
+            SimpleDateFormat("EE, d MMM", localeFromLanguage(language))
+
+        return long?.let { timeStr.format(Date(it*1000)) }?:"00, 00 00"
+    }
+
+
+    fun getDayFromUnix(long: Long?,language: Language):String{
+        val timeStr =
+            SimpleDateFormat("EEEE", localeFromLanguage(language))
+
+        val day = long?.let { timeStr.format(Date(it*1000)) }?:""
+        val today = timeStr.format(Date())
+
+        return if(day.equals(today))
+            "Today" else day
+    }
+
+    fun <T> returnByLanguage(language: Language, arabic: T, english: T): T {
+        return when (language) {
+            Language.Arabic -> arabic
+            Language.English -> english
+            Language.Default -> when (ViewHelpers.languageEnumFromLocale()) {
+                Language.Arabic -> arabic
+                Language.English -> english
+                else -> english
+            }
+        }
+    }
+
+    fun Double.convertFromKelvin(toTemp: TempUnit): Int {
+        return when (toTemp) {
+            TempUnit.Kelvin -> this.toInt()
+            TempUnit.Celsius -> (this - 273.15).toInt()
+            TempUnit.Fahrenheit -> ((this - 273.15) * 1.8 + 32).toInt()
+        }
+    }
+
+    fun getStringTempUnit(temp: TempUnit): String {
+        return when (temp) {
+            TempUnit.Kelvin -> "°K"
+            TempUnit.Celsius -> "°C"
+            TempUnit.Fahrenheit -> "°F"
+        }
+    }
+
+    fun convertFromMeterBerSecond(mbs: Double, toSpeedUnit: WindSpeedUnit): Double {
+        return when (toSpeedUnit) {
+            WindSpeedUnit.MeterBerSecond -> mbs
+            WindSpeedUnit.MileBerHour -> mbs * 2.236936
+        }
+    }
+
     class SwipeToRemove(
-        private val swipe:(position:Int)->Unit,
+        private val swipe: (position: Int) -> Unit,
     ) : ItemTouchHelper.SimpleCallback(
-    ItemTouchHelper.UP or ItemTouchHelper.DOWN,
-    ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
-    ){
+        ItemTouchHelper.UP or ItemTouchHelper.DOWN,
+        ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+    ) {
         override fun onMove(
             recyclerView: RecyclerView,
             viewHolder: RecyclerView.ViewHolder,
@@ -38,26 +108,37 @@ object ViewHelpers {
 
     }
 
-     fun setAppLocale(localeCode: String,resources: Resources,reBuildActivity: Activity) {
+    fun languageEnumFromLocale(): Language {
+        return when (Locale.getDefault().language) {
+            "en" -> Language.English
+            "ar" -> Language.Arabic
+            else -> Language.English
+        }
+    }
 
-        val resources = resources
+    private fun updateResources(context: Context, language: String): Context? {
+        val locale = Locale(language)
+        Locale.setDefault(locale)
+        val configuration: Configuration = context.resources.configuration
+        configuration.setLocale(locale)
+        configuration.setLayoutDirection(locale)
+        return context.createConfigurationContext(configuration)
+    }
+
+    fun setAppLocale(localeCode: String? = null, resources: Resources, reBuildActivity: Activity) {
         val dm = resources.displayMetrics
         val config = resources.configuration
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            config.setLocale(Locale(localeCode.lowercase(Locale.getDefault())))
-        } else {
-            config.locale = Locale(localeCode.lowercase(Locale.getDefault()))
-        }
+        config.setLocale(
+            Locale(
+                localeCode ?: Locale.getDefault().language
+            )
+        )
+
         resources.updateConfiguration(config, dm)
 
         ActivityCompat.recreate(reBuildActivity)
     }
 
 
-    fun undoSnackbar(view:View,message:String?=null,undoAction:View.OnClickListener){
-        Snackbar.make(view,message?:"article deleted successfully", Snackbar.LENGTH_LONG).apply {
-            setAction("UNDO",undoAction)
-            show()
-        }
-    }
+
 }

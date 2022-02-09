@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="google_api_key"  translatable="false">AIzaSyB3duCvo5yNrAGVCJanU3Ay6A3CjQKL7iQ</string>
+    <string name="weather_api_key" translatable="false">e566f4353c82d27826caf746d3ccfb3a</string>
+</resources>

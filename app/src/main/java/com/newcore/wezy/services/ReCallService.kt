@@ -8,7 +8,7 @@ class ReCallService(appContext: Context, params: WorkerParameters) :
     CoroutineWorker(appContext, params) {
 
     companion object{
-        var  callBacks:HashMap<String,suspend ()->Unit> = HashMap();
+        private var  callBacks:HashMap<String,suspend ()->Unit> = HashMap();
 
         fun recall(key:String,callBack:suspend ()->Unit,context: Context){
             println("i am in worker and why it is not working ")

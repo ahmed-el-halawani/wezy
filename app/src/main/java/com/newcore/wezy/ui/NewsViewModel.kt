@@ -137,13 +137,13 @@ class NewsViewModel(
 
 
     fun saveArticle(article:Article) =  viewModelScope.launch {
-        repository.upsert(article)
+//        repository.upsert(article)
     }
 
     fun getSavedNews() = repository.getAll()
 
     fun deleteArticle(article: Article) = viewModelScope.launch {
-        repository.deleteArticle(article)
+//        repository.deleteArticle(article)
     }
 
     class NewsViewModelFactory(private val app:WeatherApplication, private val repository: NewsRepository) : ViewModelProvider.Factory{

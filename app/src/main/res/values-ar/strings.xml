@@ -22,4 +22,11 @@
     <string name="favorite">المفضل</string>
     <string name="home">الصفحة الرئيسية</string>
     <string name="alarm">الإنذار</string>
+    <string name="cantFindCountyName">لم استطع ايجاد اسم الدولة</string>
+    <string name="default_language">لغة الجهاز</string>
+    <string name="cant_find_country_name">لا استطيع ايجاد اسم الدولة بالعربية</string>
+    <string name="sunset">🌇 الغروب</string>
+    <string name="sunrise">🌅 الشروق</string>
+    <string name="feels_like">✨ يشعر وكأنه</string>
+    <string name="light_rain">سماء صافية</string>
 </resources>

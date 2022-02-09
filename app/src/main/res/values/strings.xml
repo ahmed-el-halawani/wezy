@@ -21,4 +21,18 @@
     <string name="favorite">Favorite</string>
     <string name="home">Home</string>
     <string name="alarm">Alarm</string>
+    <string name="cantFindCountyName">Cant find Country name</string>
+    <string name="default_language">Default</string>
+    <string name="cant_find_country_name">cant find country name</string>
+    <string name="sunset">🌇 Sunset</string>
+    <string name="sunrise">🌅 Sunrise</string>
+    <string name="divider" translatable="false">.</string>
+    <string name="placeHolderFeelsTemp" translatable="false">32</string>
+    <string name="placeHolderTemp" translatable="false">28</string>
+    <string name="placeHolderDate" translatable="false">set, 3 Aug</string>
+    <string name="feels_like">✨ Feels like</string>
+    <string name="placeHolderTempUnit" translatable="false">°C</string>
+    <string name="placeHolderLocation" translatable="false">cairo, egypt</string>
+    <string name="placeHolderTime" translatable="false">20:10</string>
+    <string name="light_rain">Light rain</string>
 </resources>

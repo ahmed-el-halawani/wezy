@@ -10,7 +10,7 @@ import com.newcore.wezy.ui.adapters.NewsAdapter
 import com.newcore.wezy.utils.*
 
 class AlertsFragment
-    :BaseFragment<FragmentSearchNewsBinding>( FragmentSearchNewsBinding::inflate ) , ILoading {
+    :BaseFragment<FragmentSearchNewsBinding>( FragmentSearchNewsBinding::inflate ) {
 
 
     private val newsAdapter by lazy{
@@ -52,17 +52,5 @@ class AlertsFragment
             layoutManager = LinearLayoutManager(activity)
         }
     }
-
-    override fun showLoading() {
-        binding.paginationProgressBar.visibility=  View.VISIBLE
-
-    }
-
-    override fun hideLoading() {
-        binding.paginationProgressBar.visibility=  View.INVISIBLE
-    }
-
-
-
 
 }

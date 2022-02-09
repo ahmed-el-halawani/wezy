@@ -23,6 +23,7 @@ object NetworkingHelper{
 
     fun safeResponseCaller(context:Context,safeCall:()->Unit){
         try {
+
             if(hasInternet(context)){
                 safeCall()
             }else{

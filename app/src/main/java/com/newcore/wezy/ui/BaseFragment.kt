@@ -1,17 +1,21 @@
 package com.newcore.wezy.ui
 
-import android.content.SharedPreferences
+import android.app.AlertDialog
+import android.app.ProgressDialog
+import android.app.ProgressDialog.show
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.accessibility.AccessibilityEventCompat.setAction
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
-import com.newcore.wezy.WeatherApplication
-import com.newcore.wezy.shareprefrances.SettingsPreferences
+import com.google.android.material.snackbar.Snackbar
+import com.newcore.wezy.utils.ILoading
 import com.newcore.wezy.utils.INetwork
 
-abstract class BaseFragment<T : ViewBinding>(val viewBindingInflater:(LayoutInflater)->T): Fragment() {
+abstract class BaseFragment<T : ViewBinding>(val viewBindingInflater:(LayoutInflater)->T): Fragment(),
+    ILoading {
 
     val  viewModel by lazy {
         (activity as MainActivity).appStateViewModel
@@ -25,6 +29,15 @@ abstract class BaseFragment<T : ViewBinding>(val viewBindingInflater:(LayoutInfl
         viewBindingInflater(layoutInflater)
     }
 
+    val mainActivity by lazy{
+        this.activity as MainActivity
+    }
+
+    fun getLocationWithGps() = mainActivity.getGpsLocation()
+
+    fun setAppLocale(localeCode: String?=null)= mainActivity.setAppLocale(localeCode)
+
+    fun showSnackbar(message: String? = null, undoAction: View.OnClickListener)= mainActivity.showSnackbar(message, undoAction)
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -33,5 +46,15 @@ abstract class BaseFragment<T : ViewBinding>(val viewBindingInflater:(LayoutInfl
         ): View? {
             return binding.root
     }
+
+    override fun showLoading(message:String?) {
+        dialog = ProgressDialog.show(mainActivity, "",message?:"Loading. Please wait...", true);
+    }
+
+    override fun hideLoading() {
+        dialog?.dismiss()
+    }
+
+    var dialog: AlertDialog? = null
 
 }

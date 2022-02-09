@@ -1,27 +1,26 @@
 package com.newcore.wezy.localDb
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
-import com.newcore.wezy.models.Article
-
+import androidx.room.*
+import androidx.room.migration.AutoMigrationSpec
+import com.newcore.wezy.models.weatherentities.WeatherLang
+import com.newcore.wezy.utils.Constants
+import com.newcore.wezy.utils.Constants.DATABASE_NAME
 
 
 @TypeConverters(Converters::class)
 @Database(
     entities = [
-        Article::class
+        WeatherLang::class
     ],
     version = 2
 )
-abstract class ArticleDatabase : RoomDatabase() {
+abstract class WeatherDatabase : RoomDatabase() {
 
-    abstract fun articleDao(): ArticleDao
+    abstract fun weatherDeo(): WeatherDao
 
     companion object{
-        private var instance: ArticleDatabase? = null
+        private var instance: WeatherDatabase? = null
         private val Lock = Any()
 
         operator fun invoke(context: Context) = instance ?:synchronized(Lock){
@@ -33,8 +32,8 @@ abstract class ArticleDatabase : RoomDatabase() {
         private fun createDatabase(context: Context) =
             Room.databaseBuilder(
                     context.applicationContext,
-                    ArticleDatabase::class.java,
-                    "newsArticles.db"
+                    WeatherDatabase::class.java,
+                    DATABASE_NAME
                 )
                 .build()
 

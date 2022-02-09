@@ -10,3 +10,13 @@ sealed class Resource<T>(
     class Loading<T> : Resource<T>()
 
 }
+
+
+
+
+sealed class Either<S,E> {
+
+    class Success<S,E>(val data:S) : Either<S, E>()
+    class Error<S,E>(val errorCode:E,val message:String?=null) : Either<S, E>()
+
+}

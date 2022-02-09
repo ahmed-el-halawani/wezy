@@ -1,7 +1,9 @@
 package com.androiddevs.mvvmnewsapp.api
 
 import android.util.Log
-import com.newcore.wezy.utils.Constants.BASE_URL
+import com.newcore.wezy.api.CustomGeocoderApi
+import com.newcore.wezy.api.WeatherApi
+import com.newcore.wezy.utils.Constants.WEATHER_BASE_URL
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -18,13 +20,13 @@ class RetrofitInstance {
                 .Builder()
                 .addInterceptor(logging)
                 .addInterceptor {
-                    Log.i("fromMiddleWare", it.toString())
+                    Log.i("fromMiddleWare", it.request().toString())
                     it.proceed(it.request())
                 }
                 .build()
 
             Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(WEATHER_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build()
@@ -33,6 +35,14 @@ class RetrofitInstance {
 
         val newsApi: NewsApi by lazy {
             retrofit.create(NewsApi::class.java)
+        }
+
+        val weatherApi: WeatherApi by lazy {
+            retrofit.create(WeatherApi::class.java)
+        }
+
+        val customGeocoderApi: CustomGeocoderApi by lazy {
+            retrofit.create(CustomGeocoderApi::class.java)
         }
     }
 }
