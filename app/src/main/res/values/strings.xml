@@ -35,4 +35,13 @@
     <string name="placeHolderLocation" translatable="false">cairo, egypt</string>
     <string name="placeHolderTime" translatable="false">20:10</string>
     <string name="light_rain">Light rain</string>
+    <string name="percent">%</string>
+    <string name="ultraviolet">Ultraviolet</string>
+    <string name="humidity">Humidity</string>
+    <string name="visibility">Visibility</string>
+    <string name="wind_speed">Wind Speed</string>
+    <string name="m_h">m/h</string>
+    <string name="km">km</string>
+    <string name="pressure">Pressure</string>
+    <string name="hpa">hpa</string>
 </resources>

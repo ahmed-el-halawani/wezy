@@ -16,6 +16,7 @@ import com.newcore.wezy.R
 import com.newcore.wezy.WeatherApplication
 import com.newcore.wezy.databinding.FragmentMapsBinding
 import com.newcore.wezy.ui.BaseFragment
+import com.newcore.wezy.utils.Resource
 
 class MapsFragment : BaseFragment<FragmentMapsBinding>(FragmentMapsBinding::inflate) ,OnMapReadyCallback {
     private lateinit var googleMap:GoogleMap;
@@ -67,11 +68,21 @@ class MapsFragment : BaseFragment<FragmentMapsBinding>(FragmentMapsBinding::infl
             }
 
 
-            mapsViewModel.locationMutableLiveData.observe(viewLifecycleOwner) { mlocation->
-                mlocation.also{
-                    tvCountry.text = it.country?:getString(R.string.cantFindCountyName)
-                    tvLocationLine.text = it.locationName?:""
-                }
+            mapsViewModel.locationMutableLiveData.observe(viewLifecycleOwner) { mlocationResource->
+                    when(mlocationResource){
+                        is Resource.Error -> pbLoading.visibility = View.INVISIBLE
+                        is Resource.Loading -> {
+                            pbLoading.visibility = View.VISIBLE
+                            tvCountry.text = ""
+                            tvLocationLine.text = ""
+                        }
+                        is Resource.Success -> mlocationResource.data?.apply {
+                            pbLoading.visibility = View.INVISIBLE
+                            tvCountry.text = country?:getString(R.string.cantFindCountyName)
+                            tvLocationLine.text = locationName?:""
+                        }
+                    }
+
             }
 
             btnSelectLocation.setOnClickListener {

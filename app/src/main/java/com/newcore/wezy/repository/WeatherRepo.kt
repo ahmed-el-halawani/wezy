@@ -1,6 +1,7 @@
 package com.newcore.wezy.repository
 
 import android.content.Context
+import android.location.Address
 import android.location.Geocoder
 import com.androiddevs.mvvmnewsapp.api.RetrofitInstance
 import com.google.android.gms.maps.model.LatLng
@@ -13,6 +14,9 @@ import com.newcore.wezy.utils.Constants.HOME_WEATHER_ID
 import com.newcore.wezy.utils.Either
 import com.newcore.wezy.utils.NetworkingHelper
 import com.newcore.wezy.utils.Resource
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import java.util.*
 
 class WeatherRepo(
@@ -20,7 +24,26 @@ class WeatherRepo(
     private val db: WeatherDatabase
 ) {
 
-    suspend fun getORUpdateWeather(
+    suspend fun getAddresses(context: Context,latLng: LatLng,locale: Locale): List<Address>?{
+        var addresses:List<Address>? = null;
+        var trays = 5
+        Thread {
+            addresses = try {
+                val geocoder = Geocoder(context,locale)
+                geocoder.getFromLocation(latLng.latitude,latLng.longitude,1)
+            }catch (t:Throwable){
+                ArrayList()
+            }
+        }.start()
+        while(addresses==null){
+            delay(1000)
+            if(trays--<=0)break
+        }
+
+        return addresses;
+    }
+
+    private suspend fun getORUpdateWeather(
         context: Context,
         latLng: LatLng,
         weatherId: String
@@ -35,18 +58,16 @@ class WeatherRepo(
                 var englishCountry:String?=null
                 var englishAddressLine:String?=null
                 try {
-                    var geocoder = Geocoder(context,Locale.ENGLISH)
-                    var addresses = geocoder.getFromLocation(latLng.latitude,latLng.longitude,1)
-                    if(addresses.isNotEmpty()){
+
+                    var addresses = getAddresses(context,latLng,Locale.ENGLISH)
+                    if(addresses?.isNotEmpty()==true){
                         englishCountry = addresses[0].countryName
                         englishAddressLine = "${addresses[0].countryName}, ${addresses[0].adminArea}"
                     }
 
-
                     val locale = Locale("ar")
-                    geocoder = Geocoder(context,locale)
-                    addresses = geocoder.getFromLocation(latLng.latitude,latLng.longitude,1)
-                    if(addresses.isNotEmpty()){
+                    addresses = getAddresses(context,latLng,locale)
+                    if(addresses?.isNotEmpty()==true){
                         arabicCountry = addresses[0].countryName
                         arabicAddressLine = "${addresses[0].countryName}, ${addresses[0].adminArea}"
                     }
@@ -73,12 +94,12 @@ class WeatherRepo(
                             lat = latLng.latitude,
                             lon = latLng.longitude,
                             arabicResponse = arabicResponse.body()?.copy(
-                                country = arabicCountry?:englishCountry,
-                                addressLine = arabicAddressLine?:englishAddressLine
+                                country = arabicCountry?:arabicResponse.body()?.timezone?:"",
+                                addressLine = arabicAddressLine?:arabicResponse.body()?.timezone?:""
                             ),
                             englishResponse = englishResponse.body()?.copy(
-                                country = englishCountry,
-                                addressLine = englishAddressLine
+                                country = englishCountry?:englishResponse.body()?.timezone?:"",
+                                addressLine = englishAddressLine?:englishResponse.body()?.timezone?:""
                             )
                         ).also {
                             db.weatherDeo().upsert(it)
@@ -154,12 +175,12 @@ class WeatherRepo(
                         lat = latLng.latitude,
                         lon = latLng.longitude,
                         arabicResponse = arabicResponse.body()?.copy(
-                            country = arabicCountry?:englishCountry,
-                            addressLine = arabicAddressLine?:englishAddressLine
+                            country = arabicCountry?:arabicResponse.body()?.timezone?:"",
+                            addressLine = arabicAddressLine?:arabicResponse.body()?.timezone?:""
                         ),
                         englishResponse = englishResponse.body()?.copy(
-                            country = englishCountry,
-                            addressLine = englishAddressLine
+                            country = englishCountry?:englishResponse.body()?.timezone?:"",
+                            addressLine = englishAddressLine?:englishResponse.body()?.timezone?:""
                         )
                     ).also {
                         db.weatherDeo().upsert(it)

@@ -28,20 +28,16 @@ class HomeScreenViewModel(
     var language: Language = Language.Default;
     var settings: Settings
 
-    val weatherLangLiveData = MutableLiveData<WeatherState<WeatherLang>>()
 
     init {
         println("i am here mather faker")
         location = appStateViewModel.getSettings().location;
         language = appStateViewModel.getSettings().language;
         settings = appStateViewModel.getSettings()
-        viewModelScope.launch {
-            getHomeWeather(location)
-        }
     }
 
     fun refreshCurrent(afterFinish:(()->Unit)?=null)=viewModelScope.launch {
-        getHomeWeather(location)
+        appStateViewModel.getHomeWeather(appStateViewModel.getSettings().location)
         afterFinish?.invoke()
     }
 
@@ -52,16 +48,16 @@ class HomeScreenViewModel(
             return
 
         if (settings.location?.latLng?.latitude != location?.latLng?.latitude ||
-            settings.location?.latLng?.longitude != location?.latLng?.longitude
-        ) {
+            settings.location?.latLng?.longitude != location?.latLng?.longitude) {
             location = settings.location;
 
             viewModelScope.launch {
-                getHomeWeather(location)
+                appStateViewModel.getHomeWeather(location)
             }
+            this.settings = settings
         } else {
             this.settings = settings
-            weatherLangLiveData.postValue(weatherLangLiveData.value)
+            appStateViewModel.weatherLangLiveData.postValue(appStateViewModel.weatherLangLiveData.value)
         }
     }
 
@@ -74,56 +70,7 @@ class HomeScreenViewModel(
             weatherState.data.arabicResponse,
             weatherState.data.englishResponse
         )
-
     }
-
-
-
-    suspend fun getHomeWeather(location: MLocation?) {
-
-        weatherLangLiveData.postValue(WeatherState.Loading())
-
-        if (location == null) {
-            weatherLangLiveData.postValue(WeatherState.NOLocationInSettings())
-        } else {
-            val weatherState = handleHomeWeatherData(location);
-            withContext(Dispatchers.Main) {
-                weatherLangLiveData.postValue(weatherState)
-            }
-
-            if (!appStateViewModel.hasInternet()) {
-                ReCallService.recall(
-                    GET_OR_REFRESH_HOME_WITH_DATA,
-                    {
-                        weatherLangLiveData.postValue(WeatherState.Loading())
-
-                        val weatherState = handleHomeWeatherData(location);
-                        withContext(Dispatchers.Main) {
-                            weatherLangLiveData.postValue(weatherState)
-                        }
-                    }, application
-                )
-            }
-        }
-    }
-
-
-    suspend fun handleHomeWeatherData(location: MLocation?): WeatherState<WeatherLang> {
-        return if (location == null)
-            WeatherState.NOLocationInSettings()
-        else repository.getOrUpdateHomeWeatherLang(application, location.latLng).let {
-            when (it) {
-                is Either.Error -> when (it.errorCode) {
-                    RepoErrors.NoInternetConnection -> WeatherState.NOLocationInSettings(it.message)
-                    RepoErrors.ServerError -> WeatherState.ServerError(it.message)
-                    RepoErrors.WeatherNotFound -> WeatherState.NoWeatherWasFound(it.message)
-                    RepoErrors.CantCreateWeather -> WeatherState.ServerError(it.message)
-                }
-                is Either.Success -> WeatherState.Success(it.data)
-            }
-        }
-    }
-
 
     // view model factory
     class Factory(

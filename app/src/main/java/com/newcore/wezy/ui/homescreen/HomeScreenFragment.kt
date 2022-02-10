@@ -1,9 +1,7 @@
 package com.newcore.wezy.ui.homescreen
 
-import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.View
-import androidx.core.animation.addListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,15 +12,14 @@ import com.newcore.wezy.localDb.WeatherDatabase
 import com.newcore.wezy.repository.WeatherRepo
 import com.newcore.wezy.shareprefrances.SettingsPreferences
 import com.newcore.wezy.ui.BaseFragment
-import com.newcore.wezy.ui.adapters.NewsAdapter
 import com.newcore.wezy.utils.ApiViewHelper
-import com.newcore.wezy.utils.ILoading
 import com.newcore.wezy.utils.ViewHelpers
 import com.newcore.wezy.utils.ViewHelpers.convertFromKelvin
+import com.newcore.wezy.utils.ViewHelpers.getStringSpeedUnit
 import com.newcore.wezy.utils.ViewHelpers.numberLocalizer
 import com.newcore.wezy.utils.ViewHelpers.showRainOrSnowOrNot
+import com.newcore.wezy.utils.ViewHelpers.windSpeedFromMeterBerSecond
 import kotlinx.coroutines.*
-import java.text.SimpleDateFormat
 import java.util.*
 
 class HomeScreenFragment
@@ -60,30 +57,32 @@ class HomeScreenFragment
             homeScreenViewModel.locationChanged(settings)
         }
 
-        homeScreenViewModel.weatherLangLiveData.observe(viewLifecycleOwner) { weatherState ->
-
+        viewModel.weatherLangLiveData.observe(viewLifecycleOwner) { weatherState ->
             val settings = viewModel.getSettings();
             println("i am in onViewCreated in home screen fragment")
 
             when (weatherState) {
                 is WeatherState.Loading -> showLoading()
                 is WeatherState.NOLocationInSettings -> hideLoading().also {
-                    binding.tvDemo1.text = weatherState.message
-                    showSnackbar("need to set location")
+                    println("need to set location")
+//                    showSnackbar("need to set location")
                 }
                 is WeatherState.NoInternetConnection -> hideLoading().also {
-                    binding.tvDemo1.text = weatherState.message
-                    showSnackbar("No Internet Connection")
+                    println("No Internet Connection")
+
+//                    showSnackbar("No Internet Connection")
 
                 }
                 is WeatherState.NoWeatherWasFound -> hideLoading().also {
-                    binding.tvDemo1.text = weatherState.message
-                    showSnackbar("No Weather Was Found")
+                    println("No Weather Was Found")
+
+//                    showSnackbar("No Weather Was Found")
 
                 }
                 is WeatherState.ServerError -> hideLoading().also {
-                    binding.tvDemo1.text = weatherState.message
-                    showSnackbar("server error")
+                    println("server error")
+
+//                    showSnackbar("server error")
 
                 }
                 is WeatherState.Success -> {
@@ -116,9 +115,6 @@ class HomeScreenFragment
                                 }
                             }
 
-
-
-
                             tvDescription.text = todayWeather.description
 
 
@@ -126,13 +122,11 @@ class HomeScreenFragment
                                 .load(ApiViewHelper.iconImagePathMaker(todayWeather.icon ?: "01d"))
                                 .into(ivIcon)
 
-                            tvTemp.text = temp
-                                ?.convertFromKelvin(settings.tempUnit)
-                                ?.numberLocalizer(settings.language)?:""
+                            tvTemp.text = convertFromKelvin(settings)
+                                .numberLocalizer(settings.language)
 
-                            tvFeelsLike.text = feelsLike
-                                ?.convertFromKelvin(settings.tempUnit)
-                                ?.numberLocalizer(settings.language)?:""
+                            tvFeelsLike.text = convertFromKelvin(settings)
+                                .numberLocalizer(settings.language)
 
                             tvDayViewer.text = ViewHelpers.getDayFromUnix(sunrise?.toLong(),settings.language)
                             tvDate.text = ViewHelpers.getDateFromUnix(sunrise?.toLong(),settings.language)
@@ -143,24 +137,24 @@ class HomeScreenFragment
                             tvTempUnit.text = ViewHelpers.getStringTempUnit(settings.tempUnit)
                             tvTempUnit2.text = ViewHelpers.getStringTempUnit(settings.tempUnit)
 
-                            tvCountryName.text = weatherLang.country
                             tvAddressLine.text = weatherLang.addressLine
 
 
-                            tvDemo1.text = weatherLang.toString() ?: "no data"
-                            tvDemo2.text = ViewHelpers
-                                .convertFromMeterBerSecond(
-                                    windSpeed ?: 0.0,
-                                    settings.windSpeedUnit
-                                )
-                                .toString() ?: "no data"
+                            incWeatherDetails.apply {
+                                tvWindSpeed.text = windSpeedFromMeterBerSecond(settings)
+                                    .numberLocalizer(settings.language)
+
+                                tvWindSpeedUnit.text = getStringSpeedUnit(settings)
+
+                                tvHumidity.text= humidity?.numberLocalizer(settings.language)
+
+                                tvPressure.text = pressure?.numberLocalizer(settings.language)
+
+                                tvUv.text = uvi?.numberLocalizer(settings.language)
+                            }
 
 
-                            tvDemo3.text =temp
-                                ?.convertFromKelvin(settings.tempUnit)
-                                ?.numberLocalizer(settings.language)?:""
 
-                            tvDemo4.text = uvi.toString() ?: "no data"
                         }
                     }
 
@@ -168,6 +162,22 @@ class HomeScreenFragment
                 }
             }
 
+        }
+    }
+
+    private fun liteon(){
+        job?.cancel()
+        job = lifecycleScope.launch {
+            while (true) {
+                delay(Random().nextInt(10000).toLong())
+                binding.lit.visibility = View.VISIBLE
+                delay(50)
+                binding.lit.visibility = View.INVISIBLE
+                delay(50)
+                binding.lit.visibility = View.VISIBLE
+                delay(50)
+                binding.lit.visibility = View.INVISIBLE
+            }
         }
     }
 

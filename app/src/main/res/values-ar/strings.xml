@@ -29,4 +29,13 @@
     <string name="sunrise">🌅 الشروق</string>
     <string name="feels_like">✨ يشعر وكأنه</string>
     <string name="light_rain">سماء صافية</string>
+    <string name="percent">%</string>
+    <string name="ultraviolet">فوق بنفسجي</string>
+    <string name="humidity">رطوبة</string>
+    <string name="visibility">الرؤية</string>
+    <string name="wind_speed">سرعة الرياح</string>
+    <string name="m_h">م / ساعة</string>
+    <string name="km">كم</string>
+    <string name="pressure">الضغط</string>
+    <string name="hpa">هكتوباسكال</string>
 </resources>

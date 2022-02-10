@@ -40,14 +40,10 @@ class SettingsFragment
                                     Language.Arabic
                                 }
                                 rbEnglish.id -> {
-//                                    ViewHelpers.setAppLocale("en", resources, this)
-
                                     setAppLocale("en")
                                     Language.English
                                 }
                                 rbDefaultLanguage.id->{
-//                                    ViewHelpers.setAppLocale(null, resources, this)
-
                                     setAppLocale()
                                     Language.Default
                                 }
@@ -150,21 +146,27 @@ class SettingsFragment
                         override fun onChanged(permissionState: Resource<Int>?) {
                             when(permissionState){
                                 is Resource.Error -> {
+                                    println("location.gps.error")
                                     hideLoading()
                                     viewModel.locationPermissionMutableLiveData.removeObserver(this)
                                     viewModel.locationPermissionMutableLiveData = MutableLiveData()
                                     rgLocation.check(rbMap.id)
                                 }
                                 is Resource.Loading -> {
+                                    println("location.gps.Loading")
+
                                     showLoading()
                                 }
                                 is Resource.Success -> {
+                                    println("location.gps.Success")
                                     hideLoading()
                                     viewModel.locationPermissionMutableLiveData.removeObserver(this)
                                     viewModel.locationPermissionMutableLiveData = MutableLiveData()
                                     rgLocation.check(rbGps.id)
                                 }
-                                null -> {}
+                                null -> {
+                                    println("location.gps.null")
+                                }
                             }
                         }
 
