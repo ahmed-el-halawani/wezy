@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
-import android.opengl.Visibility
 import android.view.View
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -69,10 +68,14 @@ object ViewHelpers {
         val timeStr =
             SimpleDateFormat("EEEE", localeFromLanguage(language))
 
-        val day = long?.let { timeStr.format(Date(it*1000)) }?:""
-        val today = timeStr.format(Date())
+        val compareTime =
+            SimpleDateFormat("EEEE, d", localeFromLanguage(language))
 
-        return if(day == today)
+        val day = long?.let { timeStr.format(Date(it*1000)) }?:""
+        val comparableDay = long?.let { compareTime.format(Date(it*1000)) }?:""
+        val today = compareTime.format(Date())
+
+        return if(comparableDay==today)
             returnByLanguage(language,"اليوم","Today")
         else day
     }

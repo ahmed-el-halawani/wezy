@@ -42,12 +42,18 @@ class HomeScreenFragment
             setOnItemClickListener {}
         }
     }
+    private val dailyAdapter by lazy{
+        DailyAdapter().apply {
+            setOnItemClickListener {}
+        }
+    }
 
-    var job:Job? = null;
+    var job:Job? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecycleView()
+        setupDailyRecycleView()
 
         binding.srlRefreshWeather.setOnRefreshListener {
             homeScreenViewModel.refreshCurrent(::hideLoading)
@@ -95,6 +101,7 @@ class HomeScreenFragment
 
 
                         hourlyAdapter.differ.submitList(weatherLang?.hourly)
+                        dailyAdapter.differ.submitList(weatherLang?.daily)
 
                         current?.apply {
                             val todayWeather = weather[0];
@@ -185,6 +192,12 @@ class HomeScreenFragment
         binding.rvHourlyWeather.apply {
             adapter = hourlyAdapter
             layoutManager = LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL, false)
+        }
+    }
+    private fun setupDailyRecycleView(){
+        binding.rvDailyDetails.apply {
+            adapter = dailyAdapter
+            layoutManager = LinearLayoutManager(activity,LinearLayoutManager.VERTICAL, false)
         }
     }
 

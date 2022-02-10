@@ -44,4 +44,12 @@
     <string name="km">km</string>
     <string name="pressure">Pressure</string>
     <string name="hpa">hpa</string>
+    <string name="weather_icon">weather icon</string>
+    <string name="hourly">Hourly</string>
+    <string name="day">Daily</string>
+    <string name="details">Details</string>
+    <string name="next">Next</string>
+    <string name="_7_days">7 Days</string>
+    <string name="select_location">select location</string>
+    <string name="locatoin_not_selected">location Not selected yet</string>
 </resources>

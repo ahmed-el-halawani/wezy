@@ -38,4 +38,12 @@
     <string name="km">كم</string>
     <string name="pressure">الضغط</string>
     <string name="hpa">هكتوباسكال</string>
+    <string name="weather_icon">صورة الطقس</string>
+    <string name="hourly">تفاصيل كل ساعة</string>
+    <string name="day">تفاصيل اليوم</string>
+    <string name="details" />
+    <string name="next" >السبعة أيام القادمة</string>
+    <string name="_7_days" />
+    <string name="select_location">اختر الموقع</string>
+    <string name="locatoin_not_selected">لم يتم تحديد اي موقع بعد</string>
 </resources>

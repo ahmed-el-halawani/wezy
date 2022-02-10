@@ -59,24 +59,37 @@ class MapsFragment : BaseFragment<FragmentMapsBinding>(FragmentMapsBinding::infl
     private fun init(){
         binding.apply {
 
-            viewModel.getSettings().location?.also { location ->
-                googleMap.addMarker(MarkerOptions().position(location.latLng))?.let { markers.add(it) }
-                googleMap.moveCamera(CameraUpdateFactory.newLatLng(location.latLng))
+            viewModel.getSettings().location.also { location ->
+                location?.let {
+                    googleMap.addMarker(MarkerOptions().position(location.latLng))?.let { markers.add(it) }
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(location.latLng))
+                }
 
-                binding.tvCountry.text = location.country?:""
-                binding.tvLocationLine.text = location.locationName?:""
+                if(location?.latLng==null)
+                {
+                    binding.tvCountry.text = getString(R.string.locatoin_not_selected)
+                    binding.tvLocationLine.text = location?.locationName?:""
+                    btnSelectLocation.visibility = View.GONE
+
+                }else{
+                    binding.tvCountry.text = location.country ?:""
+                    binding.tvLocationLine.text = location.locationName ?:""
+                    btnSelectLocation.visibility = View.VISIBLE
+                }
+
             }
 
 
-            mapsViewModel.locationMutableLiveData.observe(viewLifecycleOwner) { mlocationResource->
-                    when(mlocationResource){
+            mapsViewModel.locationMutableLiveData.observe(viewLifecycleOwner) { locationResource->
+
+                    when(locationResource){
                         is Resource.Error -> pbLoading.visibility = View.INVISIBLE
                         is Resource.Loading -> {
                             pbLoading.visibility = View.VISIBLE
                             tvCountry.text = ""
                             tvLocationLine.text = ""
                         }
-                        is Resource.Success -> mlocationResource.data?.apply {
+                        is Resource.Success -> locationResource.data?.apply {
                             pbLoading.visibility = View.INVISIBLE
                             tvCountry.text = country?:getString(R.string.cantFindCountyName)
                             tvLocationLine.text = locationName?:""

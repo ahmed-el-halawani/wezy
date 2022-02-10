@@ -7,9 +7,10 @@
     android:paddingBottom="30dp">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="100dp"
-        android:layout_height="200dp"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
         android:layout_gravity="center"
+        app:cardBackgroundColor="#000000"
         app:cardCornerRadius="50dp"
         app:cardElevation="100dp">
 
@@ -17,80 +18,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_margin="2dp"
+            android:layout_margin="5dp"
             app:cardBackgroundColor="#fff"
-            app:cardCornerRadius="50dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/textView2"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:paddingTop="15dp"
-                    android:text="6PM"
-                    android:textColor="#000000"
-                    android:textSize="20sp" />
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_gravity="center"
-                    android:layout_margin="2dp"
-                    android:elevation="0dp"
-                    app:cardBackgroundColor="#1B10002D"
-                    app:cardCornerRadius="50dp"
-                    app:cardElevation="0dp">
-
-                    <ImageView
-                        android:id="@+id/imageView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:scaleType="centerCrop"
-                        tools:srcCompat="@drawable/defalut_icon" />
-                </androidx.cardview.widget.CardView>
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:paddingBottom="15dp">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/textView3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="30"
-                            android:textColor="#000000"
-                            android:textSize="30sp" />
-
-                        <TextView
-                            android:id="@+id/tvTempUnit3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="start"
-                            android:fontFamily="sans-serif-light"
-                            android:paddingTop="2dp"
-                            android:text="@string/placeHolderTempUnit"
-                            android:textAlignment="gravity"
-                            android:textColor="#000000"
-                            android:textDirection="ltr"
-                            android:textSize="20sp" />
-                    </LinearLayout>
-                </FrameLayout>
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
+            app:cardCornerRadius="50dp" />
     </androidx.cardview.widget.CardView>
 </FrameLayout>

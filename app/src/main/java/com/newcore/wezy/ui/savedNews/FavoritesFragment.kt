@@ -2,20 +2,13 @@ package com.newcore.wezy.ui.savedNews
 
 import android.os.Bundle
 import android.view.View
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
-import com.newcore.wezy.R
+import com.newcore.wezy.databinding.FragmentFavoriteBinding
 import com.newcore.wezy.ui.BaseFragment
-import com.newcore.wezy.databinding.FragmentSavedNewsBinding
 import com.newcore.wezy.ui.adapters.NewsAdapter
-import com.newcore.wezy.utils.Constants.ARTICLE
-import com.newcore.wezy.utils.ViewHelpers
 
 class FavoritesFragment
-    : BaseFragment<FragmentSavedNewsBinding>(FragmentSavedNewsBinding::inflate) {
+    : BaseFragment<FragmentFavoriteBinding>(FragmentFavoriteBinding::inflate) {
 
     private val newsAdapter by lazy {
         NewsAdapter()
