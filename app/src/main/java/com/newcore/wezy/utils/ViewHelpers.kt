@@ -19,7 +19,7 @@ import java.util.*
 
 object ViewHelpers {
 
-    fun List<Weather>.showRainOrSnowOrNot(rain:View, snow: View){
+    fun List<Weather>.showRainOrSnowOrNot(rain:View, snow: View,lite:()->Unit){
         rain.visibility = View.GONE
         snow.visibility = View.GONE
         forEach {
@@ -27,6 +27,7 @@ object ViewHelpers {
                 "Drizzle"   ->    rain.visibility = View.VISIBLE
                 "Rain"      ->    rain.visibility = View.VISIBLE
                 "Snow"      ->    snow.visibility = View.VISIBLE
+                "thunderstorm"  ->   lite()
             }
         }
     }
@@ -43,6 +44,13 @@ object ViewHelpers {
     fun getTimeFromUnix(long: Long?,language: Language):String{
         val timeStr =
             SimpleDateFormat("hh:mm aa", localeFromLanguage(language))
+
+        return long?.let { timeStr.format(Date(it*1000)) }?:"00:00"
+    }
+
+    fun getHourFromUnix(long: Long?,language: Language):String{
+        val timeStr =
+            SimpleDateFormat("hh aa", localeFromLanguage(language))
 
         return long?.let { timeStr.format(Date(it*1000)) }?:"00:00"
     }
