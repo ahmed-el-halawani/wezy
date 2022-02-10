@@ -9,8 +9,10 @@ import android.view.View
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.newcore.wezy.models.weatherentities.Current
 import com.newcore.wezy.models.weatherentities.Weather
 import com.newcore.wezy.shareprefrances.Language
+import com.newcore.wezy.shareprefrances.Settings
 import com.newcore.wezy.shareprefrances.TempUnit
 import com.newcore.wezy.shareprefrances.WindSpeedUnit
 import java.text.NumberFormat
@@ -50,9 +52,9 @@ object ViewHelpers {
 
     fun getHourFromUnix(long: Long?,language: Language):String{
         val timeStr =
-            SimpleDateFormat("hh aa", localeFromLanguage(language))
+            SimpleDateFormat("hhaa", localeFromLanguage(language))
 
-        return long?.let { timeStr.format(Date(it*1000)) }?:"00:00"
+        return long?.let { timeStr.format(Date(it*1000)) }?:"00PM"
     }
 
     fun getDateFromUnix(long: Long?,language: Language):String{
@@ -70,15 +72,16 @@ object ViewHelpers {
         val day = long?.let { timeStr.format(Date(it*1000)) }?:""
         val today = timeStr.format(Date())
 
-        return if(day.equals(today))
-            "Today" else day
+        return if(day == today)
+            returnByLanguage(language,"اليوم","Today")
+        else day
     }
 
     fun <T> returnByLanguage(language: Language, arabic: T, english: T): T {
         return when (language) {
             Language.Arabic -> arabic
             Language.English -> english
-            Language.Default -> when (ViewHelpers.languageEnumFromLocale()) {
+            Language.Default -> when (languageEnumFromLocale()) {
                 Language.Arabic -> arabic
                 Language.English -> english
                 else -> english
@@ -88,13 +91,22 @@ object ViewHelpers {
 
 
 
-    fun Double.convertFromKelvin(toTemp: TempUnit): Int {
-        return when (toTemp) {
-            TempUnit.Kelvin -> this.toInt()
-            TempUnit.Celsius -> (this - 273.15).toInt()
-            TempUnit.Fahrenheit -> ((this - 273.15) * 1.8 + 32).toInt()
+    fun Current.convertFromKelvin(settings: Settings): Int {
+        return when (settings.tempUnit) {
+            TempUnit.Kelvin -> (this.temp?:0.0).toInt()?:0
+            TempUnit.Celsius -> ((this.temp?:0.0) - 273.15).toInt()
+            TempUnit.Fahrenheit -> (((this.temp?:0.0) - 273.15) * 1.8 + 32).toInt()
         }
     }
+
+    fun convertFromKelvin(temp:Double?,settings: Settings): Int {
+        return when (settings.tempUnit) {
+            TempUnit.Kelvin -> (temp?:0.0).toInt()?:0
+            TempUnit.Celsius -> ((temp?:0.0) - 273.15).toInt()
+            TempUnit.Fahrenheit -> (((temp?:0.0) - 273.15) * 1.8 + 32).toInt()
+        }
+    }
+
 
     fun getStringTempUnit(temp: TempUnit): String {
         return when (temp) {
@@ -104,10 +116,17 @@ object ViewHelpers {
         }
     }
 
-    fun convertFromMeterBerSecond(mbs: Double, toSpeedUnit: WindSpeedUnit): Double {
-        return when (toSpeedUnit) {
-            WindSpeedUnit.MeterBerSecond -> mbs
-            WindSpeedUnit.MileBerHour -> mbs * 2.236936
+    fun Current.windSpeedFromMeterBerSecond(settings:Settings): Double {
+        return when (settings.windSpeedUnit) {
+            WindSpeedUnit.MeterBerSecond -> windSpeed?:0.0
+            WindSpeedUnit.MileBerHour -> (windSpeed?:0.0) * 2.236936
+        }
+    }
+
+    fun getStringSpeedUnit(settings:Settings): String {
+        return when (settings.windSpeedUnit) {
+            WindSpeedUnit.MeterBerSecond -> returnByLanguage(settings.language,"متر/ثانية","meter/second")
+            WindSpeedUnit.MileBerHour -> returnByLanguage(settings.language,"ميل/ساعة","mile/hour")
         }
     }
 

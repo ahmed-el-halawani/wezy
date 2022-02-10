@@ -35,9 +35,11 @@ class HourlyAdapter : RecyclerView.Adapter<HourlyAdapter.ViewHolder>() {
         val item = differ.currentList[position]
         holder.binding.apply {
             tvHour.text = ViewHelpers.getHourFromUnix(item.dt?.toLong(), settings.language)
-            tvTemp.text = item.temp
-                ?.convertFromKelvin(settings.tempUnit)
-                ?.numberLocalizer(settings.language)
+
+            tvTemp.text = convertFromKelvin(item.temp,settings)
+                .numberLocalizer(settings.language)
+
+
             item.weather.let {
                 if (it.isNotEmpty())
                     Glide.with(root).load(it[0].icon?.let { icon ->

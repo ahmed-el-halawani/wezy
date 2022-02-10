@@ -6,16 +6,17 @@ import androidx.lifecycle.*
 import com.google.android.gms.maps.model.LatLng
 
 import com.newcore.wezy.WeatherApplication
+import com.newcore.wezy.models.weatherentities.WeatherLang
+import com.newcore.wezy.repository.RepoErrors
 import com.newcore.wezy.repository.WeatherRepo
 import com.newcore.wezy.services.ReCallService
 import com.newcore.wezy.shareprefrances.MLocation
 import com.newcore.wezy.shareprefrances.Settings
+import com.newcore.wezy.ui.homescreen.WeatherState
+import com.newcore.wezy.utils.*
 import com.newcore.wezy.utils.Constants.GET_ADDRESS_AFTER_INTERNET_BACK
 import com.newcore.wezy.utils.Constants.INTERNET_NOT_WORKING
 import com.newcore.wezy.utils.Constants.INTERNET_WORKING
-import com.newcore.wezy.utils.NetworkingHelper
-import com.newcore.wezy.utils.Resource
-import com.newcore.wezy.utils.ViewHelpers
 import kotlinx.coroutines.*
 import java.util.*
 
@@ -23,7 +24,6 @@ class AppStateViewModel(val application: WeatherApplication,private val weatherR
     :AndroidViewModel(application) {
 
 
-    private val geocoder = Geocoder(application, Locale.getDefault())
     var settingsMutableLiveData = MutableLiveData<Settings>()
 
     var locationPermissionMutableLiveData = MutableLiveData<Resource<Int>>()
@@ -33,10 +33,60 @@ class AppStateViewModel(val application: WeatherApplication,private val weatherR
 
     var internetState = MutableLiveData<String>()
 
+    val weatherLangLiveData = MutableLiveData<WeatherState<WeatherLang>>()
+
+
     init {
         splashScreenLiveData.postValue(false)
         runSplash()
         hasInternet()
+    }
+
+
+
+    suspend fun getHomeWeather(location: MLocation?) {
+
+        weatherLangLiveData.postValue(WeatherState.Loading())
+
+        if (location == null) {
+            weatherLangLiveData.postValue(WeatherState.NOLocationInSettings())
+        } else {
+            var res = weatherRepo.getOrUpdateHomeWeatherLang(application, location.latLng);
+            var weatherState = handleHomeWeatherResponse(res);
+            withContext(Dispatchers.Main) {
+                weatherLangLiveData.postValue(weatherState)
+            }
+
+            if (!hasInternet()) {
+                ReCallService.recall(
+                    Constants.GET_OR_REFRESH_HOME_WITH_DATA,
+                    {
+                        weatherLangLiveData.postValue(WeatherState.Loading())
+                        res = weatherRepo.getOrUpdateHomeWeatherLang(application, location.latLng);
+                        weatherState = handleHomeWeatherResponse(res);
+                        withContext(Dispatchers.Main) {
+                            weatherLangLiveData.postValue(weatherState)
+                        }
+                    },
+                    application
+                )
+            }
+        }
+    }
+
+
+    private fun handleHomeWeatherResponse(response: Either<WeatherLang,RepoErrors>): WeatherState<WeatherLang> {
+        return response.let {
+            when (it) {
+                is Either.Error -> when (it.errorCode) {
+                    RepoErrors.NoInternetConnection -> WeatherState.NOLocationInSettings(it.message)
+                    RepoErrors.ServerError -> WeatherState.ServerError(it.message)
+                    RepoErrors.WeatherNotFound -> WeatherState.NoWeatherWasFound(it.message)
+                    RepoErrors.CantCreateWeather -> WeatherState.ServerError(it.message)
+                }
+                is Either.Success -> WeatherState.Success(it.data)
+            }
+        }
     }
 
 
@@ -53,7 +103,8 @@ class AppStateViewModel(val application: WeatherApplication,private val weatherR
 
     private fun runSplash() = viewModelScope.launch {
         withContext(Dispatchers.IO) {
-            delay(1000)
+            getHomeWeather(getSettings().location)
+
             withContext(Dispatchers.Main){
                 splashScreenLiveData.postValue(true)
             }

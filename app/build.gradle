@@ -68,10 +68,15 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
 
+    //recycler
+    implementation "androidx.legacy:legacy-support-v4:1.0.0"
 
     //pull to refresh
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
+
+    //flow layout
+    implementation "androidx.gridlayout:gridlayout:1.0.0"
 
 
     //circleimageview

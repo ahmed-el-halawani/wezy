@@ -1,7 +1,6 @@
 package com.newcore.wezy.ui
 
 import android.Manifest
-import android.app.ProgressDialog.show
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Looper
@@ -9,7 +8,6 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.view.accessibility.AccessibilityEventCompat.setAction
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -45,7 +43,7 @@ class MainActivity : AppCompatActivity(), INetwork {
         ViewModelProvider(this, viewModelFactory)[AppStateViewModel::class.java]
     }
 
-    fun showSnackbar(message: String? = null, undoAction: View.OnClickListener?=null) {
+    fun showSnackbar(message: String? = null, undoAction: View.OnClickListener? = null) {
         Snackbar.make(binding.root, message ?: "", Snackbar.LENGTH_LONG).apply {
             undoAction?.let { setAction("UNDO", it) }
             show()
@@ -182,6 +180,7 @@ class MainActivity : AppCompatActivity(), INetwork {
     private fun initSplash() {
         if (!appStateViewModel.splashDone)
             appStateViewModel.getSettings().also { settings ->
+                appStateViewModel.splashDone = true
                 appStateViewModel.settingsMutableLiveData.postValue(settings)
 
                 if (settings.location == null) {
@@ -199,7 +198,6 @@ class MainActivity : AppCompatActivity(), INetwork {
                     Language.Default -> setAppLocale()
                 }
 
-                appStateViewModel.splashDone = true
             }
     }
 

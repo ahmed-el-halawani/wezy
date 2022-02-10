@@ -3,59 +3,87 @@ package com.newcore.wezy.ui.map
 import android.app.Application
 import android.location.Geocoder
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.maps.model.LatLng
 import com.newcore.wezy.WeatherApplication
 import com.newcore.wezy.services.ReCallService
 import com.newcore.wezy.shareprefrances.MLocation
 import com.newcore.wezy.ui.AppStateViewModel
 import com.newcore.wezy.utils.Constants
+import com.newcore.wezy.utils.Resource
 import com.newcore.wezy.utils.ViewHelpers
 import java.util.*
 
 class MapsViewModel(val app: Application) : AndroidViewModel(app) {
-    var locationMutableLiveData = MutableLiveData<MLocation>()
+    var locationMutableLiveData = MutableLiveData<Resource<MLocation>>()
 
-    fun setLocation(latLng: LatLng, appStateViewModel: AppStateViewModel)
-        {
-            try {
-                if (appStateViewModel.hasInternet()) {
-                    requestUpdateLocation(latLng,appStateViewModel)
-                } else {
-                    ReCallService.recall(
-                        Constants.GET_ADDRESS_AFTER_INTERNET_BACK,
-                        {
-                            requestUpdateLocation(latLng,appStateViewModel)
-                        },
-                        app
+    fun setLocation(latLng: LatLng, appStateViewModel: AppStateViewModel) {
+        try {
+            locationMutableLiveData.postValue(Resource.Loading())
+            if (appStateViewModel.hasInternet()) {
+                requestUpdateLocation(latLng, appStateViewModel)
+            } else {
+                locationMutableLiveData.postValue(
+                    Resource.Success(
+                        MLocation(
+                            latLng,
+                            "cant get country name but location added successfully",
+                            "no internet connection"
+                        )
                     )
-                }
-            } catch (t: Throwable) {
-                Log.e("GeoCoderError", t.message.toString())
+                )
+                ReCallService.recall(
+                    Constants.GET_ADDRESS_AFTER_INTERNET_BACK,
+                    {
+                        requestUpdateLocation(latLng, appStateViewModel)
+                    },
+                    app
+                )
             }
+        } catch (t: Throwable) {
+            Log.e("GeoCoderError", t.message.toString())
         }
+    }
 
 
-    private  fun requestUpdateLocation(latLng: LatLng,appStateViewModel:AppStateViewModel) {
+    private fun requestUpdateLocation(latLng: LatLng, appStateViewModel: AppStateViewModel) {
         try {
             val locale = ViewHelpers
-                .returnByLanguage(appStateViewModel.getSettings().language,
+                .returnByLanguage(
+                    appStateViewModel.getSettings().language,
                     Locale("ar"),
                     Locale("en")
                 )
 
-            val geocoder = Geocoder(app,locale)
-            val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
+            Thread {
+                try {
+                    val geocoder = Geocoder(app, locale)
+                    val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
 
-                if (addresses.isNotEmpty()) {
                     val address = addresses[0]
                     val name = "${address.countryName}, ${address.adminArea}"
-                    println("address")
-                    println(address)
-                    locationMutableLiveData.postValue(MLocation(latLng, name, address.countryName))
-                } else {
-                    locationMutableLiveData.postValue(MLocation(latLng, null, null))
+                    locationMutableLiveData.postValue(
+                        Resource.Success(
+                            MLocation(latLng, name, address.countryName)
+                        )
+                    )
+                }catch (t:Throwable){
+                    locationMutableLiveData.postValue(
+                        Resource.Success(
+                            MLocation(
+                                latLng,
+                                "cant get country name but location added successfully",
+                                "no internet connection"
+                            )
+                        )
+                    )
                 }
+            }.start()
+
+
         } catch (t: Throwable) {
             Log.e("requestUpdateLocation", t.message ?: "")
         }
@@ -63,7 +91,7 @@ class MapsViewModel(val app: Application) : AndroidViewModel(app) {
 
     // view model factory
     class Factory(private val app: WeatherApplication) : ViewModelProvider.Factory {
-       val z=  """ [addressLines=[0:"Sowdari, السودان"],
+        val z = """ [addressLines=[0:"Sowdari, السودان"],
            |feature=Sowdari,admin=North Kurdufan,
            |sub-admin=Sowdari,locality=null,
            |thoroughfare=null,postalCode=null,
@@ -74,7 +102,7 @@ class MapsViewModel(val app: Application) : AndroidViewModel(app) {
            |phone=null,
            |url=null,
            |extras=null]"""
-           .trimMargin()
+            .trimMargin()
 
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return MapsViewModel(app) as T
