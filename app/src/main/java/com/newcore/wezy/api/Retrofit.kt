@@ -19,10 +19,6 @@ class RetrofitInstance {
             val client = OkHttpClient
                 .Builder()
                 .addInterceptor(logging)
-                .addInterceptor {
-                    Log.i("fromMiddleWare", it.request().toString())
-                    it.proceed(it.request())
-                }
                 .build()
 
             Retrofit.Builder()

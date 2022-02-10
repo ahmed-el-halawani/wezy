@@ -37,7 +37,7 @@ abstract class BaseFragment<T : ViewBinding>(val viewBindingInflater:(LayoutInfl
 
     fun setAppLocale(localeCode: String?=null)= mainActivity.setAppLocale(localeCode)
 
-    fun showSnackbar(message: String? = null, undoAction: View.OnClickListener)= mainActivity.showSnackbar(message, undoAction)
+    fun showSnackbar(message: String? = null, undoAction: View.OnClickListener?=null)= mainActivity.showSnackbar(message, undoAction)
 
     override fun onCreateView(
             inflater: LayoutInflater,

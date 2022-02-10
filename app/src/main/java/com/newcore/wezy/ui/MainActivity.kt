@@ -45,9 +45,9 @@ class MainActivity : AppCompatActivity(), INetwork {
         ViewModelProvider(this, viewModelFactory)[AppStateViewModel::class.java]
     }
 
-    fun showSnackbar(message: String? = null, undoAction: View.OnClickListener) {
+    fun showSnackbar(message: String? = null, undoAction: View.OnClickListener?=null) {
         Snackbar.make(binding.root, message ?: "", Snackbar.LENGTH_LONG).apply {
-            setAction("UNDO", undoAction)
+            undoAction?.let { setAction("UNDO", it) }
             show()
         }
     }

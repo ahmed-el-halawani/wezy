@@ -4,9 +4,12 @@ import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
+import android.opengl.Visibility
+import android.view.View
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.newcore.wezy.models.weatherentities.Weather
 import com.newcore.wezy.shareprefrances.Language
 import com.newcore.wezy.shareprefrances.TempUnit
 import com.newcore.wezy.shareprefrances.WindSpeedUnit
@@ -15,6 +18,18 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 object ViewHelpers {
+
+    fun List<Weather>.showRainOrSnowOrNot(rain:View, snow: View){
+        rain.visibility = View.GONE
+        snow.visibility = View.GONE
+        forEach {
+            when(it.main){
+                "Drizzle"   ->    rain.visibility = View.VISIBLE
+                "Rain"      ->    rain.visibility = View.VISIBLE
+                "Snow"      ->    snow.visibility = View.VISIBLE
+            }
+        }
+    }
 
     fun localeFromLanguage(language: Language):Locale{
         return returnByLanguage(language,Locale("ar"),Locale.ENGLISH)
@@ -62,6 +77,8 @@ object ViewHelpers {
             }
         }
     }
+
+
 
     fun Double.convertFromKelvin(toTemp: TempUnit): Int {
         return when (toTemp) {

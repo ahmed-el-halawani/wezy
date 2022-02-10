@@ -40,6 +40,11 @@ class HomeScreenViewModel(
         }
     }
 
+    fun refreshCurrent(afterFinish:(()->Unit)?=null)=viewModelScope.launch {
+        getHomeWeather(location)
+        afterFinish?.invoke()
+    }
+
     fun locationChanged(settings: Settings) {
         println("i am in locationChanged")
 

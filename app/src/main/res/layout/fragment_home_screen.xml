@@ -1,12 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/srlRefreshWeather"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.homescreen.HomeScreenFragment"
+    tools:context=".ui.homescreen.HomeScreenFragment">
 
-    >
+
+    <FrameLayout
+        android:id="@+id/lit"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#14FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="invisible">
+
+    </FrameLayout>
+
+    <com.jetradarmobile.snowfall.SnowfallView
+        android:id="@+id/snow"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        app:snowflakeAlphaMax="90"
+        app:snowflakeAlphaMin="50"
+        app:snowflakeAngleMax="5"
+        app:snowflakeSizeMax="5dp"
+        app:snowflakeSizeMin="2dp"
+        app:snowflakeSpeedMax="5"
+        app:snowflakeSpeedMin="1"
+        app:snowflakesAlreadyFalling="true"
+        app:snowflakesFadingEnabled="true"
+        app:snowflakesNum="250"
+        tools:visibility="gone" />
+
+    <com.jetradarmobile.snowfall.SnowfallView
+        android:id="@+id/rainy"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:snowflakeAlphaMax="60"
+        app:snowflakeAlphaMin="40"
+        app:snowflakeAngleMax="5"
+        app:snowflakeSizeMax="2dp"
+        app:snowflakeSizeMin="1dp"
+        app:snowflakeSpeedMax="25"
+        app:snowflakeSpeedMin="10"
+        app:snowflakesAlreadyFalling="true"
+        app:snowflakesFadingEnabled="true"
+        app:snowflakesNum="250"
+        tools:layout_editor_absoluteY="55dp"
+        tools:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/linearLayout2"
@@ -29,7 +81,9 @@
                 android:id="@+id/tvDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
                 android:text="@string/light_rain"
+                android:textAlignment="center"
                 android:textSize="30dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -103,6 +157,7 @@
                 android:id="@+id/tvDayViewer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
                 android:fontFamily="sans-serif"
                 android:text="Today"
                 android:textSize="34sp"
@@ -120,6 +175,7 @@
                 app:layout_constraintEnd_toEndOf="@+id/tvDayViewer"
                 app:layout_constraintStart_toStartOf="@+id/tvDayViewer"
                 app:layout_constraintTop_toBottomOf="@+id/tvDayViewer" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 
@@ -267,4 +323,7 @@
             android:text="@string/placeHolderTime" />
     </LinearLayout>
 
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

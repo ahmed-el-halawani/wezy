@@ -11,3 +11,5 @@ data class Weather(
     @SerializedName("icon") var icon: String? = null
 
 )
+
+

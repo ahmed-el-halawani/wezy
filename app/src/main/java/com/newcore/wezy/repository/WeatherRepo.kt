@@ -26,7 +26,7 @@ class WeatherRepo(
         weatherId: String
     ): Either<WeatherLang,RepoErrors> {
 
-//        try {
+        try {
             if (NetworkingHelper.hasInternet(context)) {
 
                 var arabicCountry:String?=null
@@ -98,9 +98,9 @@ class WeatherRepo(
                 else
                     Either.Success(weatherLangFromLocal)
             }
-//        }catch (t:Throwable){
-//           return Either.Error(RepoErrors.ServerError, message = t.message)
-//        }
+        }catch (t:Throwable){
+           return Either.Error(RepoErrors.ServerError, message = t.message)
+        }
     }
 
     suspend fun getOrUpdateHomeWeatherLang(context: Context, latLng: LatLng): Either<WeatherLang,RepoErrors> {

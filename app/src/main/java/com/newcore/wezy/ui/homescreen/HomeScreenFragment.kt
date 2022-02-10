@@ -1,5 +1,6 @@
 package com.newcore.wezy.ui.homescreen
 
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
@@ -11,9 +12,11 @@ import com.newcore.wezy.repository.WeatherRepo
 import com.newcore.wezy.shareprefrances.SettingsPreferences
 import com.newcore.wezy.ui.BaseFragment
 import com.newcore.wezy.utils.ApiViewHelper
+import com.newcore.wezy.utils.ILoading
 import com.newcore.wezy.utils.ViewHelpers
 import com.newcore.wezy.utils.ViewHelpers.convertFromKelvin
 import com.newcore.wezy.utils.ViewHelpers.numberLocalizer
+import com.newcore.wezy.utils.ViewHelpers.showRainOrSnowOrNot
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -35,9 +38,35 @@ class HomeScreenFragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        ValueAnimator.ofInt(0, 100).apply {
+            duration = 1000
+            repeatMode = ValueAnimator.RESTART
+            repeatCount = ValueAnimator.INFINITE
+            start()
+
+            addUpdateListener {
+                binding.lit.visibility = View.GONE
+
+                if(Random().nextInt(100)==it.animatedValue){
+                    binding.lit.visibility = View.VISIBLE
+                }
+            }
+        }
+
+
+
+
+
+        binding.srlRefreshWeather.setOnRefreshListener {
+            homeScreenViewModel.refreshCurrent(::hideLoading)
+
+        }
+
         viewModel.settingsMutableLiveData.observe(viewLifecycleOwner) { settings ->
             homeScreenViewModel.locationChanged(settings)
         }
+
+
 
         homeScreenViewModel.weatherLangLiveData.observe(viewLifecycleOwner) { weatherState ->
 
@@ -48,28 +77,39 @@ class HomeScreenFragment
                 is WeatherState.Loading -> showLoading()
                 is WeatherState.NOLocationInSettings -> hideLoading().also {
                     binding.tvDemo1.text = weatherState.message
+                    showSnackbar("need to set location")
                 }
                 is WeatherState.NoInternetConnection -> hideLoading().also {
                     binding.tvDemo1.text = weatherState.message
+                    showSnackbar("No Internet Connection")
+
                 }
                 is WeatherState.NoWeatherWasFound -> hideLoading().also {
                     binding.tvDemo1.text = weatherState.message
+                    showSnackbar("No Weather Was Found")
+
                 }
                 is WeatherState.ServerError -> hideLoading().also {
                     binding.tvDemo1.text = weatherState.message
+                    showSnackbar("server error")
+
                 }
                 is WeatherState.Success -> {
                     hideLoading()
                     binding.apply {
+
                         val weatherLang =
                             homeScreenViewModel.getWeatherFromWeatherLang(settings, weatherState)
                         val current = weatherLang?.current
 
                         current?.apply {
-
                             val todayWeather = weather[0];
 
+                            weather.showRainOrSnowOrNot(rainy,snow)
+
+
                             tvDescription.text = todayWeather.description
+
 
                             Glide.with(requireContext())
                                 .load(ApiViewHelper.iconImagePathMaker(todayWeather.icon ?: "01d"))
@@ -120,8 +160,16 @@ class HomeScreenFragment
         }
     }
 
+    override fun showLoading(message: String?) {
+        binding.srlRefreshWeather.isRefreshing = true
+    }
 
-//    private fun setupRecycleView(){
+    override fun hideLoading() {
+        binding.srlRefreshWeather.isRefreshing = false
+    }
+
+
+    //    private fun setupRecycleView(){
 //        binding.rvBreakingNews.apply {
 //            adapter = newsAdapter
 //            layoutManager = LinearLayoutManager(activity)
