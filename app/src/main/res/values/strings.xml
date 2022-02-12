@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name">wezy</string>
+    <string name="app_name">WEZY</string>
     <string name="no_internet_connection">no internet connection</string>
     <string name="arabic">Arabic</string>
     <string name="english">English</string>
-    <string name="celsius">Celsius</string>
-    <string name="kelvin">kelvin</string>
-    <string name="fahrenheit">Fahrenheit</string>
+    <string name="celsius">Celsius °C</string>
+    <string name="kelvin">kelvin °K</string>
+    <string name="fahrenheit">Fahrenheit °F</string>
     <string name="gps">Gps</string>
     <string name="map">Map</string>
     <string name="meter_sec">meter/sec</string>
@@ -44,4 +44,16 @@
     <string name="km">km</string>
     <string name="pressure">Pressure</string>
     <string name="hpa">hpa</string>
+    <string name="weather_icon">weather icon</string>
+    <string name="hourly">Hourly</string>
+    <string name="day">Daily</string>
+    <string name="details">Details</string>
+    <string name="next">Next</string>
+    <string name="_7_days">7 Days</string>
+    <string name="select_location">select location</string>
+    <string name="locatoin_not_selected">location Not selected yet</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="search_here">Search here</string>
+    <string name="please_wait">please wait ...</string>
+    <string name="preparing_your_weather_details">preparing your weather details</string>
 </resources>

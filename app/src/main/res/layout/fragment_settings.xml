@@ -9,8 +9,10 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -74,7 +76,6 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:gravity="center"
                             android:text="@string/arabic"
                             android:textSize="16sp"
                             tools:ignore="TouchTargetSizeCheck,TouchTargetSizeCheck" />
@@ -84,16 +85,16 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:gravity="center"
                             android:text="@string/english"
-                            android:textSize="16sp" />
+                            android:textSize="16sp"
+                            tools:ignore="TouchTargetSizeCheck" />
 
                         <RadioButton
                             android:id="@+id/rbDefaultLanguage"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:gravity="center"
+                            android:minHeight="48dp"
                             android:text="@string/default_language"
                             android:textSize="16sp" />
                     </RadioGroup>
@@ -154,8 +155,8 @@
                             android:id="@+id/rbCelsius"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
+                            android:layout_weight="1.2"
+                            android:minHeight="48dp"
                             android:text="@string/celsius"
                             android:textSize="16sp" />
 
@@ -164,7 +165,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:gravity="center"
+                            android:minHeight="48dp"
                             android:text="@string/kelvin"
                             android:textSize="16sp" />
 
@@ -172,8 +173,8 @@
                             android:id="@+id/rbFahrenheit"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
+                            android:layout_weight="1.2"
+                            android:minHeight="48dp"
                             android:text="@string/fahrenheit"
                             android:textSize="16sp" />
                     </RadioGroup>
@@ -210,7 +211,8 @@
                             android:tint="#000"
                             app:civ_border_color="#FF9800"
                             app:civ_border_width="7dp"
-                            app:civ_circle_background_color="#FF9800" />
+                            app:civ_circle_background_color="#FF9800"
+                            tools:ignore="ImageContrastCheck" />
 
                         <TextView
                             android:id="@+id/textViewLocation"
@@ -235,7 +237,8 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:gravity="center"
+                            android:minHeight="48dp"
+
                             android:text="@string/gps"
                             android:textSize="16sp" />
 
@@ -244,7 +247,8 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:gravity="center"
+
+                            android:minHeight="48dp"
                             android:text="@string/map"
                             android:textSize="16sp" />
                     </RadioGroup>
@@ -263,6 +267,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+
                     android:orientation="vertical"
                     android:padding="8dp">
 
@@ -306,7 +311,8 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:gravity="center"
+                            android:minHeight="48dp"
+
                             android:text="@string/meter_sec"
                             android:textSize="16sp" />
 
@@ -315,7 +321,8 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:gravity="center"
+
+                            android:minHeight="48dp"
                             android:text="@string/mile_hour"
                             android:textSize="16sp" />
                     </RadioGroup>
@@ -376,8 +383,10 @@
                             android:id="@+id/rbEnable"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+
+                            android:layout_gravity="center"
                             android:layout_weight="1"
-                            android:gravity="center"
+                            android:minHeight="48dp"
                             android:text="@string/enable"
                             android:textSize="16sp" />
 
@@ -386,7 +395,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:gravity="center"
+                            android:minHeight="48dp"
                             android:text="@string/disable"
                             android:textSize="16sp" />
                     </RadioGroup>

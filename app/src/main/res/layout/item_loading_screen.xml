@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/flLoadingScreen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/surfaceColor">
+
+        <com.jetradarmobile.snowfall.SnowfallView
+            android:id="@+id/rainy2"
+            app:snowflakeAlphaMax="60"
+            app:snowflakeAlphaMin="40"
+            app:snowflakeAngleMax="5"
+            app:snowflakeSizeMax="2dp"
+            app:snowflakeSizeMin="1dp"
+            app:snowflakeSpeedMax="25"
+            app:snowflakeSpeedMin="10"
+            app:snowflakesAlreadyFalling="true"
+            app:snowflakesFadingEnabled="true"
+            app:snowflakesNum="250"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible" />
+
+        <com.jetradarmobile.snowfall.SnowfallView
+            android:id="@+id/snow2"
+            app:snowflakeAlphaMax="90"
+            app:snowflakeAlphaMin="50"
+            app:snowflakeAngleMax="5"
+            app:snowflakeSizeMax="5dp"
+            app:snowflakeSizeMin="2dp"
+            app:snowflakeSpeedMax="5"
+            app:snowflakeSpeedMin="1"
+            app:snowflakesAlreadyFalling="true"
+            app:snowflakesFadingEnabled="true"
+            app:snowflakesNum="250"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:text="@string/app_name"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/preparing_your_weather_details" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/please_wait" />
+
+
+        </LinearLayout>
+
+    </FrameLayout>

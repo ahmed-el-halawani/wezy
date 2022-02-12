@@ -1,7 +1,5 @@
 package com.androiddevs.mvvmnewsapp.api
 
-import android.util.Log
-import com.newcore.wezy.api.CustomGeocoderApi
 import com.newcore.wezy.api.WeatherApi
 import com.newcore.wezy.utils.Constants.WEATHER_BASE_URL
 import okhttp3.OkHttpClient
@@ -29,16 +27,8 @@ class RetrofitInstance {
         }
 
 
-        val newsApi: NewsApi by lazy {
-            retrofit.create(NewsApi::class.java)
-        }
-
         val weatherApi: WeatherApi by lazy {
             retrofit.create(WeatherApi::class.java)
-        }
-
-        val customGeocoderApi: CustomGeocoderApi by lazy {
-            retrofit.create(CustomGeocoderApi::class.java)
         }
     }
 }

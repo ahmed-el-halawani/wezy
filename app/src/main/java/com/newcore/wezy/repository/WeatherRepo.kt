@@ -1,22 +1,18 @@
 package com.newcore.wezy.repository
 
 import android.content.Context
-import android.location.Address
-import android.location.Geocoder
+import androidx.lifecycle.LiveData
 import com.androiddevs.mvvmnewsapp.api.RetrofitInstance
 import com.google.android.gms.maps.model.LatLng
 import com.newcore.wezy.api.CallLanguage
 import com.newcore.wezy.localDb.WeatherDatabase
 import com.newcore.wezy.models.weatherentities.WeatherLang
+import com.newcore.wezy.repository.Utils.getAddresses
 import com.newcore.wezy.shareprefrances.Settings
 import com.newcore.wezy.shareprefrances.SettingsPreferences
 import com.newcore.wezy.utils.Constants.HOME_WEATHER_ID
 import com.newcore.wezy.utils.Either
 import com.newcore.wezy.utils.NetworkingHelper
-import com.newcore.wezy.utils.Resource
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import java.util.*
 
 class WeatherRepo(
@@ -24,33 +20,38 @@ class WeatherRepo(
     private val db: WeatherDatabase
 ) {
 
-    suspend fun getAddresses(context: Context,latLng: LatLng,locale: Locale): List<Address>?{
-        var addresses:List<Address>? = null;
-        var trays = 5
-        Thread {
-            addresses = try {
-                val geocoder = Geocoder(context,locale)
-                geocoder.getFromLocation(latLng.latitude,latLng.longitude,1)
-            }catch (t:Throwable){
-                ArrayList()
-            }
-        }.start()
-        while(addresses==null){
-            delay(1000)
-            if(trays--<=0)break
-        }
-
-        return addresses;
+    suspend fun removeWeatherLang(weatherLang: WeatherLang){
+        db.weatherDeo().deleteWeatherLang(weatherLang)
     }
 
-    private suspend fun getORUpdateWeather(
+    fun getAllFav(): LiveData<List<WeatherLang>> =
+        db.weatherDeo().getAll()
+
+    suspend fun upsert(weatherLang: WeatherLang) = db.weatherDeo().upsert(weatherLang)
+
+    suspend fun getFromLocal(weatherId: String): Either<WeatherLang,RepoErrors> {
+        val weatherLangFromLocal = db.weatherDeo().getWithId(weatherId)
+
+        return if (weatherLangFromLocal == null)
+            Either.Error(
+                errorCode = RepoErrors.WeatherNotFound,
+                message = "no Local Weather was found")
+        else
+            Either.Success(weatherLangFromLocal)
+    }
+
+    suspend fun getHomeFromLocal(): Either<WeatherLang,RepoErrors> {
+        return getFromLocal(HOME_WEATHER_ID);
+    }
+
+     suspend fun getORUpdateWeather(
         context: Context,
         latLng: LatLng,
         weatherId: String
     ): Either<WeatherLang,RepoErrors> {
 
         try {
-            if (NetworkingHelper.hasInternet(context)) {
+            return if (NetworkingHelper.hasInternet(context)) {
 
                 var arabicCountry:String?=null
                 var arabicAddressLine:String?=null
@@ -106,21 +107,15 @@ class WeatherRepo(
                         }
                     )
                 else
-                    Either.Error(
-                        errorCode = RepoErrors.ServerError,
-                        message = "${arabicResponse.errorBody()} , ${englishResponse.errorBody()}")
+                    getFromLocal(weatherId)
+//                    Either.Error(
+//                        errorCode = RepoErrors.ServerError,
+//                        message = "${arabicResponse.errorBody()} , ${englishResponse.errorBody()}")
             } else {
-                val weatherLangFromLocal = db.weatherDeo().getWithId(weatherId)
-
-                return if (weatherLangFromLocal == null)
-                    Either.Error(
-                        errorCode = RepoErrors.WeatherNotFound,
-                        message = "no Local Weather was found")
-                else
-                    Either.Success(weatherLangFromLocal)
+                getFromLocal(weatherId)
             }
         }catch (t:Throwable){
-           return Either.Error(RepoErrors.ServerError, message = t.message)
+           return getFromLocal(weatherId)
         }
     }
 
@@ -139,29 +134,28 @@ class WeatherRepo(
             var englishCountry:String?=null
             var englishAddressLine:String?=null
             try {
-                var geocoder = Geocoder(context,Locale.ENGLISH)
-                var addresses = geocoder.getFromLocation(latLng.latitude,latLng.longitude,1)
-                englishCountry = addresses[0].countryName
-                if(addresses[0].maxAddressLineIndex>=0){
-                    englishAddressLine = addresses[0].getAddressLine(0)
+
+                var addresses = getAddresses(context,latLng,Locale.ENGLISH)
+                if(addresses?.isNotEmpty()==true){
+                    englishCountry = addresses[0].countryName
+                    englishAddressLine = "${addresses[0].countryName}, ${addresses[0].adminArea}"
                 }
 
                 val locale = Locale("ar")
-                geocoder = Geocoder(context,locale)
-                addresses = geocoder.getFromLocation(latLng.latitude,latLng.longitude,1)
-                arabicCountry = addresses[0].countryName
-                if(addresses[0].maxAddressLineIndex>=0){
-                    arabicAddressLine = addresses[0].getAddressLine(0)
+                addresses = getAddresses(context,latLng,locale)
+                if(addresses?.isNotEmpty()==true){
+                    arabicCountry = addresses[0].countryName
+                    arabicAddressLine = "${addresses[0].countryName}, ${addresses[0].adminArea}"
                 }
-            }catch (t:Throwable){
 
-            }
+            }catch (t:Throwable){}
 
             val arabicResponse = RetrofitInstance.weatherApi.getWeather(
                 latLng.latitude,
                 latLng.longitude,
                 CallLanguage.Ar
             )
+
             val englishResponse = RetrofitInstance.weatherApi.getWeather(
                 latLng.latitude,
                 latLng.longitude,

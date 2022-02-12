@@ -7,6 +7,7 @@ import androidx.preference.PreferenceManager
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.Gson
 import com.newcore.wezy.utils.Constants.ALL_DATA_ROUTE
+import java.io.Serializable
 
 class SettingsPreferences(private val application:Application) {
 
@@ -87,4 +88,4 @@ enum class NotificationState{
     Enable,Disable
 }
 
-data class MLocation( val latLng: LatLng, val locationName:String?=null,val country: String?= null)
+data class MLocation( val latLng: LatLng, val locationName:String?=null,val country: String?= null) : Serializable

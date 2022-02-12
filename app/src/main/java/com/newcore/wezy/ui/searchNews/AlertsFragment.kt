@@ -1,27 +1,23 @@
 package com.newcore.wezy.ui.searchNews
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.newcore.wezy.databinding.FragmentSearchNewsBinding
 import com.newcore.wezy.ui.BaseFragment
-import com.newcore.wezy.ui.adapters.NewsAdapter
-import com.newcore.wezy.utils.*
 
 class AlertsFragment
     :BaseFragment<FragmentSearchNewsBinding>( FragmentSearchNewsBinding::inflate ) {
 
 
-    private val newsAdapter by lazy{
-        NewsAdapter().apply {
-            setOnItemClickListener {}
-        }
-    }
+//    private val newsAdapter by lazy{
+//        NewsAdapter().apply {
+//            setOnItemClickListener {}
+//        }
+//    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupRecycleView()
+//        setupRecycleView()
 
 //
 //        newsViewModel.searchNewsLiveData.observe(viewLifecycleOwner) { resource ->
@@ -45,12 +41,12 @@ class AlertsFragment
 
 
     }
-
-    private fun setupRecycleView(){
-        binding.rvSearchNews.apply {
-            adapter = newsAdapter
-            layoutManager = LinearLayoutManager(activity)
-        }
-    }
+//
+//    private fun setupRecycleView(){
+//        binding.rvSearchNews.apply {
+//            adapter = newsAdapter
+//            layoutManager = LinearLayoutManager(activity)
+//        }
+//    }
 
 }

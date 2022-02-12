@@ -4,17 +4,19 @@ import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
-import android.opengl.Visibility
 import android.view.View
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.newcore.wezy.models.weatherentities.Current
 import com.newcore.wezy.models.weatherentities.Weather
+import com.newcore.wezy.models.weatherentities.WeatherLang
+import com.newcore.wezy.models.weatherentities.WeatherResponse
 import com.newcore.wezy.shareprefrances.Language
 import com.newcore.wezy.shareprefrances.Settings
 import com.newcore.wezy.shareprefrances.TempUnit
 import com.newcore.wezy.shareprefrances.WindSpeedUnit
+import com.newcore.wezy.ui.homescreen.WeatherState
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -69,10 +71,14 @@ object ViewHelpers {
         val timeStr =
             SimpleDateFormat("EEEE", localeFromLanguage(language))
 
-        val day = long?.let { timeStr.format(Date(it*1000)) }?:""
-        val today = timeStr.format(Date())
+        val compareTime =
+            SimpleDateFormat("EEEE, d", localeFromLanguage(language))
 
-        return if(day == today)
+        val day = long?.let { timeStr.format(Date(it*1000)) }?:""
+        val comparableDay = long?.let { compareTime.format(Date(it*1000)) }?:""
+        val today = compareTime.format(Date())
+
+        return if(comparableDay==today)
             returnByLanguage(language,"اليوم","Today")
         else day
     }
@@ -93,7 +99,7 @@ object ViewHelpers {
 
     fun Current.convertFromKelvin(settings: Settings): Int {
         return when (settings.tempUnit) {
-            TempUnit.Kelvin -> (this.temp?:0.0).toInt()?:0
+            TempUnit.Kelvin -> (this.temp?:0.0).toInt()
             TempUnit.Celsius -> ((this.temp?:0.0) - 273.15).toInt()
             TempUnit.Fahrenheit -> (((this.temp?:0.0) - 273.15) * 1.8 + 32).toInt()
         }
@@ -181,6 +187,28 @@ object ViewHelpers {
         resources.updateConfiguration(config, dm)
 
         ActivityCompat.recreate(reBuildActivity)
+    }
+
+
+    fun getWeatherFromWeatherLang(
+        settings: Settings,
+        weatherState: WeatherState.Success<WeatherLang>
+    ): WeatherResponse? {
+        return ViewHelpers.returnByLanguage(
+            settings.language,
+            weatherState.data.arabicResponse,
+            weatherState.data.englishResponse
+        )
+    }
+    fun getWeatherFromWeatherLang(
+        settings: Settings,
+        weatherState:WeatherLang
+    ): WeatherResponse? {
+        return ViewHelpers.returnByLanguage(
+            settings.language,
+            weatherState.arabicResponse,
+            weatherState.englishResponse
+        )
     }
 
 

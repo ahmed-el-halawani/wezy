@@ -29,6 +29,7 @@ class HomeScreenViewModel(
     var settings: Settings
 
 
+
     init {
         println("i am here mather faker")
         location = appStateViewModel.getSettings().location;
@@ -41,11 +42,11 @@ class HomeScreenViewModel(
         afterFinish?.invoke()
     }
 
-    fun locationChanged(settings: Settings) {
+    fun locationChanged(settings: Settings):Boolean {
         println("i am in locationChanged")
 
         if (settings == this.settings)
-            return
+            return false;
 
         if (settings.location?.latLng?.latitude != location?.latLng?.latitude ||
             settings.location?.latLng?.longitude != location?.latLng?.longitude) {
@@ -55,9 +56,11 @@ class HomeScreenViewModel(
                 appStateViewModel.getHomeWeather(location)
             }
             this.settings = settings
+            return false;
         } else {
             this.settings = settings
             appStateViewModel.weatherLangLiveData.postValue(appStateViewModel.weatherLangLiveData.value)
+            return true;
         }
     }
 
