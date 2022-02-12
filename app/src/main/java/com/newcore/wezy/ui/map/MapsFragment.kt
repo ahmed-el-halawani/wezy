@@ -1,9 +1,13 @@
 package com.newcore.wezy.ui.map
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI.navigateUp
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -16,9 +20,10 @@ import com.newcore.wezy.R
 import com.newcore.wezy.WeatherApplication
 import com.newcore.wezy.databinding.FragmentMapsBinding
 import com.newcore.wezy.ui.BaseFragment
+import com.newcore.wezy.ui.MainActivity
 import com.newcore.wezy.utils.Resource
 
-class MapsFragment : BaseFragment<FragmentMapsBinding>(FragmentMapsBinding::inflate) ,OnMapReadyCallback {
+open class MapsFragment : BaseFragment<FragmentMapsBinding>(FragmentMapsBinding::inflate) ,OnMapReadyCallback {
     private lateinit var googleMap:GoogleMap;
     private var latLng: LatLng? = null
 
@@ -31,6 +36,8 @@ class MapsFragment : BaseFragment<FragmentMapsBinding>(FragmentMapsBinding::infl
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as MainActivity).setSupportActionBar(binding.toolbar)
+        onBackd()
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
     }
@@ -99,13 +106,21 @@ class MapsFragment : BaseFragment<FragmentMapsBinding>(FragmentMapsBinding::infl
             }
 
             btnSelectLocation.setOnClickListener {
-                if(latLng!=null){
-                    viewModel.updateSettingsLocation(latLng!!)
-                }
-                findNavController().popBackStack()
+                onButtonClick(latLng)
             }
         }
 
+    }
+
+    open fun onButtonClick(latLng:LatLng?){
+        if(latLng!=null){
+            viewModel.updateSettingsLocation(latLng!!)
+        }
+        findNavController().popBackStack()
+    }
+
+    private fun onBackd() {
+        mainActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
 }

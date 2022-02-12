@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/border_2"
     android:clipToPadding="true"
     tools:context=".ui.map.MapsFragment">
 
@@ -19,6 +20,56 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="#AC4E4E"
+        app:cardBackgroundColor="#00FFFFFF"
+        app:cardCornerRadius="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme"
+            app:title=" ">
+
+            <EditText
+                android:id="@+id/etSearchForLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="location"
+                android:backgroundTint="#00FFFFFF"
+                android:ems="10"
+                android:hint="@string/search_here"
+                android:inputType="textPersonName"
+                android:textColorHint="#979797"
+                android:visibility="gone"
+                tools:layout_editor_absoluteX="16dp"
+                tools:layout_editor_absoluteY="5dp" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/map"
+                android:textSize="24sp" />
+        </androidx.appcompat.widget.Toolbar>
+
+
+    </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -86,10 +137,10 @@
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/border"
 
-                android:textAlignment="center"
-                android:padding="10dp"
                 android:elevation="2dp"
+                android:padding="10dp"
                 android:text="@string/select_location"
+                android:textAlignment="center"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />

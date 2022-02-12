@@ -4,13 +4,13 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupWithNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI.navigateUp
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.snackbar.Snackbar
@@ -23,11 +23,32 @@ import com.newcore.wezy.shareprefrances.DefineLocationType
 import com.newcore.wezy.shareprefrances.Language
 import com.newcore.wezy.shareprefrances.SettingsPreferences
 import com.newcore.wezy.utils.Constants.INTERNET_NOT_WORKING
+import com.newcore.wezy.utils.Extensions.setupWithNavController2
 import com.newcore.wezy.utils.INetwork
 import com.newcore.wezy.utils.Resource
 import com.newcore.wezy.utils.ViewHelpers
+import kotlinx.coroutines.*
 
 class MainActivity : AppCompatActivity(), INetwork {
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        appStateViewModel.splashScreenLiveData.observe(this) {
+            if (it) {
+                setContentView(binding.root)
+
+                setupBottomNavBar()
+
+                internetStateObserver()
+
+                splashScreenFadeOutAnimation()
+            } else {
+                initSplash()
+            }
+        }
+    }
+
 
     fun setAppLocale(localeCode: String? = null) =
         ViewHelpers.setAppLocale(localeCode, resources, this)
@@ -70,8 +91,7 @@ class MainActivity : AppCompatActivity(), INetwork {
                 ),
                 200
             )
-
-            return;
+            return
         }
 
 
@@ -82,16 +102,9 @@ class MainActivity : AppCompatActivity(), INetwork {
                 override fun onLocationResult(location: LocationResult) {
                     println("(fusedLocationClient.requestLocationUpdates)")
                     super.onLocationResult(location)
-
-                    Log.e("Location", location.toString() ?: "")
-
                     appStateViewModel.updateSettingsLocation(
                         LatLng(location.locations[0].latitude, location.locations[0].longitude)
                     )
-                }
-
-                override fun onLocationAvailability(p0: LocationAvailability) {
-                    super.onLocationAvailability(p0)
                 }
             },
             Looper.getMainLooper()
@@ -112,60 +125,56 @@ class MainActivity : AppCompatActivity(), INetwork {
         binding.tvNoInternetConnection.visibility = View.GONE
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        appStateViewModel.splashScreenLiveData.observe(this) {
-            if (it) {
-                setContentView(binding.root)
+    private fun setupBottomNavBar() {
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(binding.newsNavHostFragment.id) as NavHostFragment
 
-                window.setBackgroundDrawableResource(R.color.surfaceColor)
+        binding.bottomNavigationView
+            .setupWithNavController2(
+                navHostFragment.navController,
+                mapOf(
+                    Pair(
+                        R.id.favoriteScreen,
+                        listOf(
+                            R.id.favoriteScreen,
+                            R.id.locationPreviewFragment
+                        )
+                    ),
+                    Pair(
+                        R.id.settingsFragment,
+                        listOf(
+                            R.id.settingsFragment,
+                            R.id.mapsFragment
+                        )
+                    )
+                )
+            )
+    }
 
-                val navHostFragment =
-                    supportFragmentManager.findFragmentById(binding.newsNavHostFragment.id) as NavHostFragment
-
-                binding.bottomNavigationView.setupWithNavController(navHostFragment.navController)
-
-                appStateViewModel.internetState.observe(this) { internetState ->
-                    if (internetState.equals(INTERNET_NOT_WORKING)) {
-                        showNoInternet()
-                    } else {
-                        hideNoInternet()
-                    }
-
-                    println(internetState)
-                }
-            } else {
-                initSplash()
-            }
+    private fun internetStateObserver() {
+        appStateViewModel.internetState.observe(this@MainActivity) { internetState ->
+            if (internetState.equals(INTERNET_NOT_WORKING))
+                showNoInternet()
+            else
+                hideNoInternet()
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == 200) {
-            permissions.forEach {
-                println(it)
-            }
-            grantResults.forEach {
-                println(it)
-                if (it == PackageManager.PERMISSION_DENIED) {
-                    appStateViewModel.locationPermissionMutableLiveData
-                        .postValue(
-                            Resource.Error(
-                                "PERMISSION_DENIED check it in main",
-                                PackageManager.PERMISSION_DENIED
-                            )
-                        )
-                    println("(it==PackageManager.PERMISSION_DENIED)")
-                    return;
+    private fun splashScreenFadeOutAnimation() {
+        if(!appStateViewModel.isLoaded)
+            CoroutineScope(Dispatchers.IO).launch {
+                delay(500)
+                withContext(Dispatchers.Main){
+
+                    binding.clHomeView.animate()
+                        .alpha(1f).duration = 800
+
+                    appStateViewModel.isLoaded = true
                 }
             }
-            getGpsLocation()
-        }
+        else
+            binding.clHomeView.alpha = 1f
+
     }
 
     private val fusedLocationClient: FusedLocationProviderClient by lazy {
@@ -175,7 +184,6 @@ class MainActivity : AppCompatActivity(), INetwork {
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
-
 
     private fun initSplash() {
         if (!appStateViewModel.splashDone)
@@ -199,6 +207,47 @@ class MainActivity : AppCompatActivity(), INetwork {
                 }
 
             }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 200) {
+            permissions.forEach {
+                println(it)
+            }
+            grantResults.forEach {
+                println(it)
+                if (it == PackageManager.PERMISSION_DENIED) {
+                    appStateViewModel.locationPermissionMutableLiveData
+                        .postValue(
+                            Resource.Error(
+                                "PERMISSION_DENIED check it in main",
+                                PackageManager.PERMISSION_DENIED
+                            )
+                        )
+                    return
+                }
+            }
+            getGpsLocation()
+        }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        val mAppBarConfiguration = AppBarConfiguration.Builder(
+            R.id.settingsFragment,
+            R.id.favoriteScreen,
+            R.id.alertsScreen,
+            R.id.homeScreenFragment
+        ).build()
+
+        val navHostFragment = supportFragmentManager.findFragmentById(binding.newsNavHostFragment.id) as NavHostFragment
+        val navController = navHostFragment.navController
+        return (navigateUp(navController, mAppBarConfiguration)
+                || super.onSupportNavigateUp())
     }
 
 }

@@ -1,45 +1,56 @@
-package com.newcore.wezy.ui.homescreen
+package com.newcore.wezy.ui.locationPreviewFragment
 
-import android.content.Context
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.room.Room
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.newcore.wezy.WeatherApplication
-import com.newcore.wezy.databinding.FragmentHomeScreenBinding
+import com.newcore.wezy.databinding.FragmentLocationPreviewBinding
 import com.newcore.wezy.localDb.WeatherDatabase
 import com.newcore.wezy.repository.WeatherRepo
 import com.newcore.wezy.shareprefrances.SettingsPreferences
 import com.newcore.wezy.ui.BaseFragment
+import com.newcore.wezy.ui.homescreen.DailyAdapter
+import com.newcore.wezy.ui.homescreen.HourlyAdapter
+import com.newcore.wezy.ui.homescreen.WeatherState
 import com.newcore.wezy.utils.ApiViewHelper
 import com.newcore.wezy.utils.ViewHelpers
 import com.newcore.wezy.utils.ViewHelpers.convertFromKelvin
-import com.newcore.wezy.utils.ViewHelpers.getStringSpeedUnit
+import com.newcore.wezy.utils.ViewHelpers.getWeatherFromWeatherLang
 import com.newcore.wezy.utils.ViewHelpers.numberLocalizer
 import com.newcore.wezy.utils.ViewHelpers.showRainOrSnowOrNot
 import com.newcore.wezy.utils.ViewHelpers.windSpeedFromMeterBerSecond
 import kotlinx.coroutines.*
 import java.util.*
 
-class HomeScreenFragment
-    : BaseFragment<FragmentHomeScreenBinding>(FragmentHomeScreenBinding::inflate) {
 
-    val homeScreenViewModel by lazy {
-        val viewModelFactory = HomeScreenViewModel.Factory(
+class LocationPreviewFragment
+    : BaseFragment<FragmentLocationPreviewBinding>( FragmentLocationPreviewBinding::inflate ) {
+
+    private val locationPreviewFragmentArgs:LocationPreviewFragmentArgs by navArgs()
+
+    private val previewViewModel by lazy{
+        ViewModelProvider(this,LocationPreviewViewModel.Factory(
             requireContext().applicationContext as WeatherApplication,
             WeatherRepo(
                 SettingsPreferences(requireContext().applicationContext as WeatherApplication),
-                WeatherDatabase(requireContext().applicationContext)
+                WeatherDatabase(requireContext()),
             ),
-            viewModel
-        )
-        ViewModelProvider(this, viewModelFactory)[HomeScreenViewModel::class.java]
+            viewModel,
+            locationPreviewFragmentArgs.location
+        ))[LocationPreviewViewModel::class.java]
     }
+
 
     private var hourlyAdapter =
         HourlyAdapter().apply {
@@ -51,37 +62,48 @@ class HomeScreenFragment
         }
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        setupRecycleView()
-        setupDailyRecycleView()
-        Log.e("onAttachLocation Home", "onAttach:", )
 
-    }
-
-    var job:Job? = null
+    var job: Job? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if(previewViewModel.isLoaded)
+            binding.flLoading.flLoadingScreen.visibility = View.GONE
 
-        binding.srlRefreshWeather.setOnRefreshListener {
-            homeScreenViewModel.refreshCurrent(::hideLoading)
-        }
 
-        viewModel.settingsMutableLiveData.observe(viewLifecycleOwner) { settings ->
-            if(homeScreenViewModel.locationChanged(settings))
-            {
-               CoroutineScope(Dispatchers.IO).launch{
-                   delay(200)
-                   withContext(Dispatchers.Main){
-                       setupRecycleView()
-                       setupDailyRecycleView()
-                   }
-               }
+        mainActivity.setSupportActionBar(binding.toolbar)
+        mainActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            delay(200)
+            withContext(Dispatchers.Main){
+                setupRecycleView()
+                setupDailyRecycleView()
             }
         }
 
-        viewModel.weatherLangLiveData.observe(viewLifecycleOwner) { weatherState ->
+
+        binding.srlRefreshWeather.setOnRefreshListener {
+            previewViewModel.refreshCurrent(::hideLoading)
+        }
+
+        viewModel.settingsMutableLiveData.observe(viewLifecycleOwner) { settings ->
+            if(previewViewModel.locationChanged(settings))
+            {
+                println("settings changes")
+                Log.e("settings changes", "settings changes:")
+
+                CoroutineScope(Dispatchers.IO).launch{
+                    delay(200)
+                    withContext(Dispatchers.Main){
+                        setupRecycleView()
+                        setupDailyRecycleView()
+                    }
+                }
+            }
+        }
+
+        previewViewModel.weatherLangLiveData.observe(viewLifecycleOwner) { weatherState ->
             val settings = viewModel.getSettings();
             println("i am in onViewCreated in home screen fragment")
 
@@ -118,10 +140,9 @@ class HomeScreenFragment
                     hideLoading()
                     binding.apply {
 
-                        val weatherLang =
-                            homeScreenViewModel.getWeatherFromWeatherLang(settings, weatherState)
-                        val current = weatherLang?.current
+                        val weatherLang = getWeatherFromWeatherLang(settings, weatherState)
 
+                        val current = weatherLang?.current
 
                         hourlyAdapter.differ.submitList(weatherLang?.hourly)
                         dailyAdapter.differ.submitList(weatherLang?.daily)
@@ -159,7 +180,7 @@ class HomeScreenFragment
                                 tvWindSpeed.text = windSpeedFromMeterBerSecond(settings)
                                     .numberLocalizer(settings.language)
 
-                                tvWindSpeedUnit.text = getStringSpeedUnit(settings)
+                                tvWindSpeedUnit.text = ViewHelpers.getStringSpeedUnit(settings)
 
                                 tvHumidity.text= humidity?.numberLocalizer(settings.language)
 
@@ -200,13 +221,13 @@ class HomeScreenFragment
     private fun setupRecycleView(){
         binding.rvHourlyWeather.apply {
             adapter = hourlyAdapter
-            layoutManager = LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         }
     }
     private fun setupDailyRecycleView(){
         binding.rvDailyDetails.apply {
             adapter = dailyAdapter
-            layoutManager = LinearLayoutManager(activity,LinearLayoutManager.VERTICAL, false)
+            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         }
     }
 
@@ -216,6 +237,21 @@ class HomeScreenFragment
 
     override fun hideLoading() {
         binding.srlRefreshWeather.isRefreshing = false
+
+
+        if(!previewViewModel.isLoaded)
+            binding.flLoading.flLoadingScreen.animate()
+                .alpha(0f)
+                .setDuration(400)
+                .setListener(object:AnimatorListenerAdapter(){
+                    override fun onAnimationEnd(animation: Animator?) {
+                        super.onAnimationEnd(animation)
+                        binding.flLoading.flLoadingScreen.alpha = 0f
+                        previewViewModel.isLoaded = true;
+                    }
+                });
+
     }
+
 
 }

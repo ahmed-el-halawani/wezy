@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:cardBackgroundColor="#27FFFFFF"
+        app:cardCornerRadius="50dp">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_margin="2dp"
+            app:cardBackgroundColor="#B910002D"
+            app:cardCornerRadius="50dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="20dp">
+
+                <TextView
+                    android:id="@+id/tvCountry"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:fontFamily="sans-serif"
+                    android:textSize="24sp"
+                    tools:text="Country" />
+
+                <TextView
+                    android:id="@+id/tvAddressLine"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:textAlignment="center"
+                    android:textSize="14sp"
+                    tools:text="AddressLine,helwan" />
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end"
+                    app:srcCompat="@drawable/ic_next_arrow" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.CardView>
+
+</FrameLayout>

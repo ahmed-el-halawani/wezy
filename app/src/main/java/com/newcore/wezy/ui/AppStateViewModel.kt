@@ -4,7 +4,6 @@ import android.location.Geocoder
 import android.util.Log
 import androidx.lifecycle.*
 import com.google.android.gms.maps.model.LatLng
-
 import com.newcore.wezy.WeatherApplication
 import com.newcore.wezy.models.weatherentities.WeatherLang
 import com.newcore.wezy.repository.RepoErrors
@@ -17,12 +16,16 @@ import com.newcore.wezy.utils.*
 import com.newcore.wezy.utils.Constants.GET_ADDRESS_AFTER_INTERNET_BACK
 import com.newcore.wezy.utils.Constants.INTERNET_NOT_WORKING
 import com.newcore.wezy.utils.Constants.INTERNET_WORKING
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
-class AppStateViewModel(val application: WeatherApplication,private val weatherRepo: WeatherRepo)
-    :AndroidViewModel(application) {
+class AppStateViewModel(val application: WeatherApplication, private val weatherRepo: WeatherRepo) :
+    AndroidViewModel(application) {
 
+    var isLoaded =false
 
     var settingsMutableLiveData = MutableLiveData<Settings>()
 
@@ -42,10 +45,7 @@ class AppStateViewModel(val application: WeatherApplication,private val weatherR
         hasInternet()
     }
 
-
-
     suspend fun getHomeWeather(location: MLocation?) {
-
         weatherLangLiveData.postValue(WeatherState.Loading())
 
         if (location == null) {
@@ -75,7 +75,7 @@ class AppStateViewModel(val application: WeatherApplication,private val weatherR
     }
 
 
-    private fun handleHomeWeatherResponse(response: Either<WeatherLang,RepoErrors>): WeatherState<WeatherLang> {
+    private fun handleHomeWeatherResponse(response: Either<WeatherLang, RepoErrors>): WeatherState<WeatherLang> {
         return response.let {
             when (it) {
                 is Either.Error -> when (it.errorCode) {
@@ -90,32 +90,44 @@ class AppStateViewModel(val application: WeatherApplication,private val weatherR
     }
 
 
-     fun hasInternet():Boolean {
-        return if (NetworkingHelper.hasInternet(application)){
+    fun hasInternet(): Boolean {
+        return if (NetworkingHelper.hasInternet(application)) {
             internetState.postValue(INTERNET_WORKING)
             true
-        }else{
+        } else {
             internetState.postValue(INTERNET_NOT_WORKING)
-            ReCallService.recall("hasInternet",::hasInternet,application)
+            ReCallService.recall("hasInternet", ::hasInternet, application)
             false
         }
     }
 
     private fun runSplash() = viewModelScope.launch {
-        withContext(Dispatchers.IO) {
-            getHomeWeather(getSettings().location)
-
-            withContext(Dispatchers.Main){
+        val location = getSettings().location;
+        if (location == null) {
+            withContext(Dispatchers.Main) {
+                weatherLangLiveData.postValue(WeatherState.NOLocationInSettings())
                 splashScreenLiveData.postValue(true)
             }
+            return@launch;
         }
+        val res = weatherRepo.getHomeFromLocal()
+        val weatherState = handleHomeWeatherResponse(res);
+        println(weatherState)
+        withContext(Dispatchers.Main) {
+            weatherLangLiveData.postValue(weatherState)
+            splashScreenLiveData.postValue(true)
+        }
+
+        delay(500)
+        getHomeWeather(location)
+
     }
 
 
     // shared preferences
-    fun getSettings():Settings = weatherRepo.getSettings()
+    fun getSettings(): Settings = weatherRepo.getSettings()
 
-    fun updateSettings(settings:(Settings)->Settings){
+    fun updateSettings(settings: (Settings) -> Settings) {
         settings(getSettings()).also {
             weatherRepo.updateSettings(it)
             settingsMutableLiveData.postValue(it)
@@ -123,9 +135,8 @@ class AppStateViewModel(val application: WeatherApplication,private val weatherR
     }
 
 
-
-    fun updateSettingsLocation(locationMutableLiveData:MutableLiveData<MLocation>){
-        locationMutableLiveData.value?.also {mLocation->
+    fun updateSettingsLocation(locationMutableLiveData: MutableLiveData<MLocation>) {
+        locationMutableLiveData.value?.also { mLocation ->
             updateSettings {
                 it.apply {
                     location = mLocation
@@ -136,57 +147,59 @@ class AppStateViewModel(val application: WeatherApplication,private val weatherR
 
     fun updateSettingsLocation(latLng: LatLng) {
 
-           try {
-               var  mLocation = MLocation(latLng,"","")
+        try {
+            var mLocation = MLocation(latLng, "", "")
 
-               if(hasInternet()){
-                   mLocation = locationDetailsFromLatLng(latLng)
-               }else{
-                       ReCallService.recall(
-                           GET_ADDRESS_AFTER_INTERNET_BACK,
-                           {
-                               mLocation = locationDetailsFromLatLng(latLng)
-                               updateSettings { it.copy(location=mLocation) }
-                           },
-                           application
-                       )
-               }
+            if (hasInternet()) {
+                mLocation = locationDetailsFromLatLng(latLng)
+            } else {
+                ReCallService.recall(
+                    GET_ADDRESS_AFTER_INTERNET_BACK,
+                    {
+                        mLocation = locationDetailsFromLatLng(latLng)
+                        updateSettings { it.copy(location = mLocation) }
+                    },
+                    application
+                )
+            }
 
-                   updateSettings { it.copy(location=mLocation) }
-           }catch (t:Throwable){
-               Log.e("updateSettingsLocation", t.message?:"" )
-           }
+            updateSettings { it.copy(location = mLocation) }
+        } catch (t: Throwable) {
+            Log.e("updateSettingsLocation", t.message ?: "")
+        }
     }
 
-    fun locationDetailsFromLatLng(latLng:LatLng):MLocation {
-        var  mLocation = MLocation(latLng,"","")
+    fun locationDetailsFromLatLng(latLng: LatLng): MLocation {
+        var mLocation = MLocation(latLng, "", "")
 
         return try {
             val locale = ViewHelpers
-                .returnByLanguage(getSettings().language,
+                .returnByLanguage(
+                    getSettings().language,
                     Locale("ar"),
                     Locale("en")
                 )
 
-            val geocoder = Geocoder(application,locale)
+            val geocoder = Geocoder(application, locale)
             val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
 
-            if(addresses.isNotEmpty()) {
+            if (addresses.isNotEmpty()) {
                 val address = addresses[0]
                 val name = address.getAddressLine(0)
-                mLocation = MLocation(latLng,name,address.countryName)
+                mLocation = MLocation(latLng, name, address.countryName)
             }
             mLocation
-        }catch (t:Throwable){
-            Log.e("locationDetailsFromLatLng", t.message?:"" )
+        } catch (t: Throwable) {
+            Log.e("locationDetailsFromLatLng", t.message ?: "")
             mLocation
         }
     }
 
     // view model factory
-    class Factory(private val app: WeatherApplication, private val repository: WeatherRepo) : ViewModelProvider.Factory{
+    class Factory(private val app: WeatherApplication, private val repository: WeatherRepo) :
+        ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return AppStateViewModel(app,repository) as T
+            return AppStateViewModel(app, repository) as T
         }
     }
 }

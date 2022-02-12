@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.newcore.wezy.WeatherApplication
 import com.newcore.wezy.databinding.ItemNext7DaysBinding
-import com.newcore.wezy.models.Article
 import com.newcore.wezy.models.weatherentities.Daily
 import com.newcore.wezy.shareprefrances.SettingsPreferences
 import com.newcore.wezy.utils.ViewHelpers
@@ -36,6 +35,7 @@ class DailyAdapter : RecyclerView.Adapter<DailyAdapter.ViewHolder>() {
         val item = differ.currentList[position]
         holder.binding.apply {
             item.apply {
+
                 tvDayViewer.text = getDayFromUnix(dt?.toLong(), settings.language)
                 tvDate.text = getDateFromUnix(dt?.toLong(), settings.language)
 
@@ -57,7 +57,7 @@ class DailyAdapter : RecyclerView.Adapter<DailyAdapter.ViewHolder>() {
 
 
     // set listeners
-    fun setOnItemClickListener(onItemClickListener: ((Article) -> Unit)?) {
+    fun setOnItemClickListener(onItemClickListener: ((Daily) -> Unit)?) {
         this.onItemClickListener = onItemClickListener
     }
 
@@ -74,6 +74,7 @@ class DailyAdapter : RecyclerView.Adapter<DailyAdapter.ViewHolder>() {
     val differ = AsyncListDiffer(this, differCallback)
 
 
+
     // private vars
-    private var onItemClickListener: ((Article) -> Unit)? = null
+    private var onItemClickListener: ((Daily) -> Unit)? = null
 }

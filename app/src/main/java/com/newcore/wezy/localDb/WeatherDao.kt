@@ -19,9 +19,7 @@ interface WeatherDao {
     @Query("SELECT * FROM $WEATHER_TABLE WHERE id=:id ")
     suspend fun getWithId(id: String): WeatherLang?
 
-
-//    // delete article from db
-//    @Delete
-//    suspend fun deleteArticle(article: Article)
+    @Delete
+    suspend fun deleteWeatherLang(weatherLang: WeatherLang)
 
 }

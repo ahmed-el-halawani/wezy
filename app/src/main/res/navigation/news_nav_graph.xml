@@ -11,28 +11,29 @@
         tools:layout="@layout/fragment_home_screen"
         />
     <fragment
-        android:id="@+id/articleFragment"
-        android:name="com.newcore.wezy.ui.article.LocationPreviewFragment"
-        android:label="ArticleFragment"
+        android:id="@+id/locationPreviewFragment"
+        android:name="com.newcore.wezy.ui.locationPreviewFragment.LocationPreviewFragment"
+        android:label="LocationPreviewFragment"
+        tools:layout="@layout/fragment_location_preview"
 
         >
         <argument
-            android:name="article"
-            app:argType="com.newcore.wezy.models.Article" />
+            android:name="location"
+            app:argType="com.newcore.wezy.models.weatherentities.WeatherLang" />
     </fragment>
     <fragment
         android:id="@+id/favoriteScreen"
-        android:name="com.newcore.wezy.ui.savedNews.FavoritesFragment"
-        android:label="FavoriteScreen">
-        <action
-            android:id="@+id/action_savedNewsFragment_to_articleFragment"
-            app:destination="@id/articleFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
+        android:name="com.newcore.wezy.ui.favorites.FavoritesFragment"
+        android:label="FavoriteScreen"
+        tools:layout="@layout/fragment_favorite"
 
-            />
+        >
+        <action
+            android:id="@+id/action_favoriteScreen_to_locationPreviewFragment"
+            app:destination="@id/locationPreviewFragment" />
+        <action
+            android:id="@+id/action_favoriteScreen_to_mapsForFavoriteFragment"
+            app:destination="@id/mapsForFavoriteFragment" />
     </fragment>
     <fragment
         android:id="@+id/alertsScreen"
@@ -55,4 +56,11 @@
         android:name="com.newcore.wezy.ui.map.MapsFragment"
         android:label="fragment_maps"
         tools:layout="@layout/fragment_maps" />
+    <fragment
+        android:id="@+id/mapsForFavoriteFragment"
+        android:name="com.newcore.wezy.ui.map.MapsForFavoriteFragment"
+        android:label="MapsForFavoriteFragment"
+        tools:layout="@layout/fragment_maps"
+
+        />
 </navigation>
