@@ -57,4 +57,5 @@ abstract class BaseFragment<T : ViewBinding>(val viewBindingInflater:(LayoutInfl
 
     var dialog: AlertDialog? = null
 
+
 }

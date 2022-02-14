@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.newcore.wezy.models.MyAlert
 import com.newcore.wezy.models.weatherentities.WeatherLang
 import com.newcore.wezy.utils.Constants.DATABASE_NAME
 
@@ -12,9 +13,10 @@ import com.newcore.wezy.utils.Constants.DATABASE_NAME
 @TypeConverters(Converters::class)
 @Database(
     entities = [
-        WeatherLang::class
+        WeatherLang::class,
+        MyAlert::class
     ],
-    version = 3
+    version = 4
 )
 abstract class WeatherDatabase : RoomDatabase() {
 

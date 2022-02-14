@@ -9,6 +9,8 @@ object Constants {
 
     //room constants
     const val WEATHER_TABLE = "weather"
+    const val MY_ALERTS_TABLE = "MyAlerts"
+
     const val DATABASE_NAME = "weatherDB"
     const val HOME_WEATHER_ID = "HOME_WEATHER_ID"
 
@@ -45,4 +47,18 @@ object Constants {
     //Recall Service Tags
     const val GET_ADDRESS_AFTER_INTERNET_BACK = "GET_ADDRESS_AFTER_INTERNET_BACK"
     const val GET_OR_REFRESH_HOME_WITH_DATA = "GET_OR_REFRESH_HOME_WITH_DATA"
+
+    //notification constants
+    const val CHANNEL_ID = "CHANNEL_ID"
+    const val EXTRA_NOTIFICATION_ID_CUSTOM = "EXTRA_NOTIFICATION_ID"
+    const val ALERT_DATA = "ALERT_DATA"
+    const val MY_ALERT = "MY_ALERT"
+    const val MY_ALERT_LAT = "MY_ALERT_LAT"
+    const val MY_ALERT_LNG = "MY_ALERT_LNG"
+    const val MY_ALERT_FROM = "MY_ALERT_FROM"
+    const val MY_ALERT_TO = "MY_ALERT_TO"
+    const val MY_ALERT_ID = "MY_ALERT_ID"
+    const val ALERT_TITLE = "ALERT_TITLE"
+    const val ALERT_BODY = "ALERT_BODY"
+
 }

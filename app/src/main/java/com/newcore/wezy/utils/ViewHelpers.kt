@@ -52,6 +52,13 @@ object ViewHelpers {
         return long?.let { timeStr.format(Date(it*1000)) }?:"00:00"
     }
 
+    fun getTimeFromDate(date:Date,language: Language):String{
+        val timeStr =
+            SimpleDateFormat("hh:mm aa", localeFromLanguage(language))
+
+        return timeStr.format(date)
+    }
+
     fun getHourFromUnix(long: Long?,language: Language):String{
         val timeStr =
             SimpleDateFormat("hhaa", localeFromLanguage(language))

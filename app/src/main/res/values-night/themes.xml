@@ -3,7 +3,7 @@
     <style name="Theme.wezy" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimaryVariant">@color/surfaceColor</item>
-        <item name="colorPrimary">@color/surfaceColor</item>
+        <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryDark">@color/surfaceColor</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
@@ -22,7 +22,6 @@
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:textColorSecondary">@color/white</item>
         <item name="android:textColorTertiary">@color/white</item>
-        <item name="textFillColor">@color/white</item>
         <item name="tooltipForegroundColor">@color/white</item>
 
     </style>

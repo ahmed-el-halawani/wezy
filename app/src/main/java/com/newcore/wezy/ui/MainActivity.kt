@@ -1,16 +1,29 @@
 package com.newcore.wezy.ui
 
 import android.Manifest
+import android.app.Activity
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
+import android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION
+import android.provider.Settings.canDrawOverlays
 import android.view.View
+import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.navigateUp
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.snackbar.Snackbar
@@ -19,23 +32,50 @@ import com.newcore.wezy.WeatherApplication
 import com.newcore.wezy.databinding.ActivityMainBinding
 import com.newcore.wezy.localDb.WeatherDatabase
 import com.newcore.wezy.repository.WeatherRepo
+import com.newcore.wezy.services.LongRunningWorker
 import com.newcore.wezy.shareprefrances.DefineLocationType
 import com.newcore.wezy.shareprefrances.Language
 import com.newcore.wezy.shareprefrances.SettingsPreferences
+import com.newcore.wezy.utils.BetterActivityResult
+import com.newcore.wezy.utils.Constants.CHANNEL_ID
 import com.newcore.wezy.utils.Constants.INTERNET_NOT_WORKING
 import com.newcore.wezy.utils.Extensions.setupWithNavController2
 import com.newcore.wezy.utils.INetwork
 import com.newcore.wezy.utils.Resource
 import com.newcore.wezy.utils.ViewHelpers
 import kotlinx.coroutines.*
+import java.time.Duration
+
+data class ActivityResultData(val requestCode: Int, val resultCode: Int, val data: Intent?)
+
 
 class MainActivity : AppCompatActivity(), INetwork {
+
+    var onActivityResult:((Int, Int, Intent?)->Unit)?=null
+
+
+    var activityResultLiveData = MutableLiveData<ActivityResultData>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setupNotificationChanel()
+
+
+
+//
+//        val request = OneTimeWorkRequestBuilder<LongRunningWorker>()
+//            .setInitialDelay(Duration.ofMillis(10000L))
+////            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+//            .build()
+//
+//        WorkManager.getInstance(this)
+//            .enqueue(request)
+
         appStateViewModel.splashScreenLiveData.observe(this) {
             if (it) {
+//                requestOverLayPermission()
+
                 setContentView(binding.root)
 
                 setupBottomNavBar()
@@ -74,6 +114,8 @@ class MainActivity : AppCompatActivity(), INetwork {
     // get Gps location
     fun getGpsLocation() {
         appStateViewModel.locationPermissionMutableLiveData.postValue(Resource.Loading())
+
+
 
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -209,6 +251,78 @@ class MainActivity : AppCompatActivity(), INetwork {
             }
     }
 
+
+    override fun onSupportNavigateUp(): Boolean {
+        val mAppBarConfiguration = AppBarConfiguration.Builder(
+            R.id.settingsFragment,
+            R.id.favoriteScreen,
+            R.id.alertsScreen,
+            R.id.homeScreenFragment
+        ).build()
+
+        val navHostFragment = supportFragmentManager.findFragmentById(binding.newsNavHostFragment.id) as NavHostFragment
+        val navController = navHostFragment.navController
+        return (navigateUp(navController, mAppBarConfiguration)
+                || super.onSupportNavigateUp())
+    }
+
+
+
+    private fun setupNotificationChanel(){
+            // Create the NotificationChannel
+            val name = getString(R.string.channel_name)
+            val descriptionText ="setting weather alarm"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val mChannel = NotificationChannel(CHANNEL_ID, name, importance)
+            mChannel.description = descriptionText
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(mChannel)
+    }
+
+
+    fun requestOverLayPermission(){
+        @Suppress("DEPRECATION")
+        if (!canDrawOverlays(this)) {
+            val intent =
+                Intent(ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName"))
+            startActivityForResult(intent, 500)
+        }else{
+            val request = OneTimeWorkRequestBuilder<LongRunningWorker>()
+                .setInitialDelay(Duration.ofMillis(10000L))
+//            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                .build()
+
+            WorkManager.getInstance(this)
+                .enqueue(request)
+        }
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+//        onActivityResult?.invoke(requestCode,resultCode,data);
+
+        activityResultLiveData.postValue(ActivityResultData(requestCode, resultCode, data))
+
+
+
+//
+//        if (requestCode == 500) {
+//            if (canDrawOverlays(this)) {
+//                val request = OneTimeWorkRequestBuilder<LongRunningWorker>()
+//                    .setInitialDelay(Duration.ofMillis(10000L))
+////            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+//                    .build()
+//
+//                WorkManager.getInstance(this)
+//                    .enqueue(request)
+//            }
+//        }
+    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -234,20 +348,7 @@ class MainActivity : AppCompatActivity(), INetwork {
             }
             getGpsLocation()
         }
-    }
 
-    override fun onSupportNavigateUp(): Boolean {
-        val mAppBarConfiguration = AppBarConfiguration.Builder(
-            R.id.settingsFragment,
-            R.id.favoriteScreen,
-            R.id.alertsScreen,
-            R.id.homeScreenFragment
-        ).build()
-
-        val navHostFragment = supportFragmentManager.findFragmentById(binding.newsNavHostFragment.id) as NavHostFragment
-        val navController = navHostFragment.navController
-        return (navigateUp(navController, mAppBarConfiguration)
-                || super.onSupportNavigateUp())
     }
 
 }

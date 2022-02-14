@@ -49,4 +49,15 @@
     <string name="search_here">ابحث هنا</string>
     <string name="please_wait">انتظر من فضلك …</string>
     <string name="preparing_your_weather_details">يقوم بتجهيز بيانات الطقس</string>
+    <string name="inform_me_with">نبهني عن طريق</string>
+    <string name="alert">منبه</string>
+    <string name="from">من</string>
+    <string name="to">الي</string>
+    <string name="from_now">من الان</string>
+    <string name="cancel">ألغاء</string>
+    <string name="save">حفظ</string>
+    <string name="happy_title">WEZY لديها أخبار سارة لك 😊</string>
+    <string name="happy_body">لا توجد تنبيهات سيئة لهذه المدة ،
+أتمنى أن تستمتع ببقية يومك</string>
+
 </resources>

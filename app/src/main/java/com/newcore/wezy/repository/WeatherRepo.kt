@@ -6,6 +6,7 @@ import com.androiddevs.mvvmnewsapp.api.RetrofitInstance
 import com.google.android.gms.maps.model.LatLng
 import com.newcore.wezy.api.CallLanguage
 import com.newcore.wezy.localDb.WeatherDatabase
+import com.newcore.wezy.models.MyAlert
 import com.newcore.wezy.models.weatherentities.WeatherLang
 import com.newcore.wezy.repository.Utils.getAddresses
 import com.newcore.wezy.shareprefrances.Settings
@@ -24,10 +25,52 @@ class WeatherRepo(
         db.weatherDeo().deleteWeatherLang(weatherLang)
     }
 
+    suspend fun removeAlert(alert: MyAlert){
+        db.weatherDeo().deleteAlert(alert)
+    }
+
+    suspend fun removeAlertWithId(alertId:Long){
+        db.weatherDeo().deleteAlertWithId(alertId)
+    }
+
     fun getAllFav(): LiveData<List<WeatherLang>> =
         db.weatherDeo().getAll()
 
+
+    fun getAllAlert(): LiveData<List<MyAlert>> =
+        db.weatherDeo().getAllAlerts()
+
     suspend fun upsert(weatherLang: WeatherLang) = db.weatherDeo().upsert(weatherLang)
+
+    suspend fun upsertAlert( context: Context,alert: MyAlert):MyAlert {
+        var arabicCountry:String?=null
+
+        var englishCountry:String?=null
+
+        try {
+            var addresses = getAddresses(context, LatLng(alert.lat?:0.0,alert.lon?:0.0),Locale.ENGLISH)
+            if(addresses?.isNotEmpty()==true){
+                englishCountry = addresses[0].countryName
+            }
+
+            addresses = getAddresses(context, LatLng(alert.lat?:0.0,alert.lon?:0.0),Locale("ar"))
+            if(addresses?.isNotEmpty()==true){
+                arabicCountry = addresses[0].countryName
+            }
+
+        }catch (t:Throwable){
+
+        }
+
+        alert.apply {
+            arabicCountryName = arabicCountry
+            englishCountryName = englishCountry
+        }
+
+        val id:Long = db.weatherDeo().upsertAlert(alert)
+
+        return alert.copy(id=id.toInt())
+    }
 
     suspend fun getFromLocal(weatherId: String): Either<WeatherLang,RepoErrors> {
         val weatherLangFromLocal = db.weatherDeo().getWithId(weatherId)
@@ -42,6 +85,82 @@ class WeatherRepo(
 
     suspend fun getHomeFromLocal(): Either<WeatherLang,RepoErrors> {
         return getFromLocal(HOME_WEATHER_ID);
+    }
+
+    suspend fun getAlert(
+        context: Context,
+        latLng: LatLng
+    ): Either<WeatherLang,RepoErrors> {
+
+//        return try {
+            return if (NetworkingHelper.hasInternet(context)) {
+
+                var arabicCountry:String?=null
+                var arabicAddressLine:String?=null
+
+                var englishCountry:String?=null
+                var englishAddressLine:String?=null
+                try {
+
+                    var addresses = getAddresses(context,latLng,Locale.ENGLISH)
+                    if(addresses?.isNotEmpty()==true){
+                        englishCountry = addresses[0].countryName
+                        englishAddressLine = "${addresses[0].countryName}, ${addresses[0].adminArea}"
+                    }
+
+                    val locale = Locale("ar")
+                    addresses = getAddresses(context,latLng,locale)
+                    if(addresses?.isNotEmpty()==true){
+                        arabicCountry = addresses[0].countryName
+                        arabicAddressLine = "${addresses[0].countryName}, ${addresses[0].adminArea}"
+                    }
+
+                }catch (t:Throwable){
+
+                }
+
+                val arabicResponse = RetrofitInstance.weatherApi.getAlerts(
+                    latLng.latitude,
+                    latLng.longitude,
+                    CallLanguage.Ar
+                )
+                val englishResponse = RetrofitInstance.weatherApi.getAlerts(
+                    latLng.latitude,
+                    latLng.longitude,
+                    CallLanguage.En
+                )
+
+                return if (arabicResponse.isSuccessful && englishResponse.isSuccessful)
+                    Either.Success(
+                        WeatherLang(
+                            id = UUID.randomUUID().toString(),
+                            lat = latLng.latitude,
+                            lon = latLng.longitude,
+                            arabicResponse = arabicResponse.body()?.copy(
+                                country = arabicCountry?:arabicResponse.body()?.timezone?:"",
+                                addressLine = arabicAddressLine?:arabicResponse.body()?.timezone?:""
+                            ),
+                            englishResponse = englishResponse.body()?.copy(
+                                country = englishCountry?:englishResponse.body()?.timezone?:"",
+                                addressLine = englishAddressLine?:englishResponse.body()?.timezone?:""
+                            )
+                        )
+                    )
+                else
+                    Either.Error(
+                        RepoErrors.ServerError
+                    )
+            } else {
+                Either.Error(
+                    RepoErrors.NoInternetConnection
+                )
+            }
+//        }catch (t:Throwable){
+//             Either.Error(
+//                RepoErrors.ServerError,
+//                 message = t.toString()
+//            )
+//        }
     }
 
      suspend fun getORUpdateWeather(
@@ -118,6 +237,9 @@ class WeatherRepo(
            return getFromLocal(weatherId)
         }
     }
+
+
+
 
     suspend fun getOrUpdateHomeWeatherLang(context: Context, latLng: LatLng): Either<WeatherLang,RepoErrors> {
         return getORUpdateWeather(context,latLng, HOME_WEATHER_ID)

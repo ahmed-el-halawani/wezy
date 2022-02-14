@@ -54,6 +54,16 @@
     <string name="locatoin_not_selected">location Not selected yet</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="search_here">Search here</string>
-    <string name="please_wait">please wait ...</string>
+    <string name="please_wait">please wait …</string>
     <string name="preparing_your_weather_details">preparing your weather details</string>
+    <string name="inform_me_with">Notify me by</string>
+    <string name="alert">Alarm</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+    <string name="from_now">From Now</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="happy_title">WEZY has good news for you 😊</string>
+    <string name="happy_body">there is no bad alerts for this duration,
+hope you enjoy the rest of your day</string>
 </resources>

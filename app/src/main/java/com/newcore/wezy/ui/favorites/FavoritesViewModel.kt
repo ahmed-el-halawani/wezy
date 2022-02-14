@@ -22,7 +22,6 @@ class FavoritesViewModel (val application: WeatherApplication,
                           private val appStateViewModel: AppStateViewModel
 ) : AndroidViewModel(application) {
 
-    val weatherLangLiveData = MutableLiveData<List<WeatherLang>>();
 
     fun deleteWeatherLang(weatherLang: WeatherLang) = viewModelScope.launch {
         repository.removeWeatherLang(weatherLang)
