@@ -12,7 +12,7 @@ import com.newcore.wezy.R
 import com.newcore.wezy.databinding.ActivityNotificationBinding
 import com.newcore.wezy.services.StopAlarmBroadcast
 import com.newcore.wezy.utils.Constants.ALERT_BODY
-import com.newcore.wezy.utils.Constants.ALERT_DATA
+import com.newcore.wezy.utils.Constants.ALERT_COUNTRY
 import com.newcore.wezy.utils.Constants.ALERT_TITLE
 import com.newcore.wezy.utils.Constants.EXTRA_NOTIFICATION_ID_CUSTOM
 import com.tapadoo.alerter.Alerter
@@ -32,6 +32,10 @@ class NotificationActivity : AppCompatActivity() {
     }
     val body by lazy {
         intent.getStringExtra(ALERT_BODY)
+    }
+
+    val country by lazy {
+        intent.getStringExtra(ALERT_COUNTRY)
     }
 
 

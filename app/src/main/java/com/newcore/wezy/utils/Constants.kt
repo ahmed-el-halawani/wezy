@@ -1,8 +1,6 @@
 package com.newcore.wezy.utils
 
-import android.content.res.Resources
 import com.newcore.wezy.R
-import com.newcore.wezy.WeatherApplication
 import com.newcore.wezy.WeatherApplication.Companion.weatherApplication
 
 object Constants {
@@ -15,27 +13,15 @@ object Constants {
     const val HOME_WEATHER_ID = "HOME_WEATHER_ID"
 
     // api keys
-    const val API_KEY = ""
-
     val WEATHER_API_KEY by lazy {
         weatherApplication?.getString(R.string.weather_api_key)!!
     }
 
     //const val BASE_URL= "https://newsapi.org/v2/"
     const val WEATHER_BASE_URL= "https://api.openweathermap.org/"
-    const val TOTAL_NUMBER_OF_ITEMS_PER_REQUEST = 20
-    const val MAX_RESULT_FOR_FREE_API = 100
 
     //coroutines
     const val SEARCH_TIME_DELAY = 500L
-
-    // Error tags
-    const val BREAKING_ERROR_TAG = "BREAKING_ERROR_TAG"
-    const val SEARCH_ERROR_TAG = "SEARCH_ERROR_TAG"
-    const val No_INTERNET_CONNECTION = "No_INTERNET_CONNECTION"
-
-    // navigation args keys
-    const val ARTICLE = "article"
 
     // sharedPreferences Tags
     const val ALL_DATA_ROUTE = "ALL_DATA_ROUTE"
@@ -51,14 +37,13 @@ object Constants {
     //notification constants
     const val CHANNEL_ID = "CHANNEL_ID"
     const val EXTRA_NOTIFICATION_ID_CUSTOM = "EXTRA_NOTIFICATION_ID"
-    const val ALERT_DATA = "ALERT_DATA"
-    const val MY_ALERT = "MY_ALERT"
     const val MY_ALERT_LAT = "MY_ALERT_LAT"
     const val MY_ALERT_LNG = "MY_ALERT_LNG"
-    const val MY_ALERT_FROM = "MY_ALERT_FROM"
     const val MY_ALERT_TO = "MY_ALERT_TO"
     const val MY_ALERT_ID = "MY_ALERT_ID"
     const val ALERT_TITLE = "ALERT_TITLE"
     const val ALERT_BODY = "ALERT_BODY"
+    const val ALERT_COUNTRY = "ALERT_COUNTRY"
+    const val IS_ALERT = "IS_ALERT"
 
 }

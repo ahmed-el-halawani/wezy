@@ -30,13 +30,12 @@ class SettingsFragment
     private fun onCheckedChanged(radioGroup: RadioGroup?, i: Int) {
         binding.apply {
             viewModel.updateSettings {
-                it.apply {
+                it.copy().apply {
                     when (radioGroup) {
                         rgLanguage -> language =
                             when (i) {
                                 rbArabic.id -> {
-                                    ViewHelpers.setAppLocale("ar", resources, requireActivity())
-//                                    setAppLocale("ar")
+                                    setAppLocale("ar")
                                     Language.Arabic
                                 }
                                 rbEnglish.id -> {
@@ -47,7 +46,7 @@ class SettingsFragment
                                     setAppLocale()
                                     Language.Default
                                 }
-                                else -> Language.Arabic
+                                else -> Language.Default
                             }
                         rgLocation -> defineLocationType =
                             when (i) {

@@ -7,6 +7,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.newcore.wezy.WeatherApplication
 import com.newcore.wezy.models.weatherentities.WeatherLang
 import com.newcore.wezy.repository.RepoErrors
+import com.newcore.wezy.repository.Utils.getAddresses
 import com.newcore.wezy.repository.WeatherRepo
 import com.newcore.wezy.services.ReCallService
 import com.newcore.wezy.shareprefrances.MLocation
@@ -51,19 +52,19 @@ class AppStateViewModel(val application: WeatherApplication, private val weather
         if (location == null) {
             weatherLangLiveData.postValue(WeatherState.NOLocationInSettings())
         } else {
-            var res = weatherRepo.getOrUpdateHomeWeatherLang(application, location.latLng);
-            var weatherState = handleHomeWeatherResponse(res);
-            withContext(Dispatchers.Main) {
-                weatherLangLiveData.postValue(weatherState)
-            }
-
-            if (!hasInternet()) {
+            if (hasInternet()) {
+                val res = weatherRepo.getOrUpdateHomeWeatherLang(application, location.latLng);
+                val weatherState = handleHomeWeatherResponse(res);
+                withContext(Dispatchers.Main) {
+                    weatherLangLiveData.postValue(weatherState)
+                }
+            }else {
                 ReCallService.recall(
                     Constants.GET_OR_REFRESH_HOME_WITH_DATA,
                     {
                         weatherLangLiveData.postValue(WeatherState.Loading())
-                        res = weatherRepo.getOrUpdateHomeWeatherLang(application, location.latLng);
-                        weatherState = handleHomeWeatherResponse(res);
+                        val res = weatherRepo.getOrUpdateHomeWeatherLang(application, location.latLng);
+                        val weatherState = handleHomeWeatherResponse(res);
                         withContext(Dispatchers.Main) {
                             weatherLangLiveData.postValue(weatherState)
                         }
@@ -91,6 +92,7 @@ class AppStateViewModel(val application: WeatherApplication, private val weather
 
 
     fun hasInternet(): Boolean {
+//        return false
         return if (NetworkingHelper.hasInternet(application)) {
             internetState.postValue(INTERNET_WORKING)
             true
@@ -118,7 +120,7 @@ class AppStateViewModel(val application: WeatherApplication, private val weather
             splashScreenLiveData.postValue(true)
         }
 
-        delay(500)
+        delay(2000)
         getHomeWeather(location)
 
     }
@@ -148,20 +150,21 @@ class AppStateViewModel(val application: WeatherApplication, private val weather
     fun updateSettingsLocation(latLng: LatLng) {
 
         try {
-            var mLocation = MLocation(latLng, "", "")
+            val mLocation = MLocation(latLng, "", "")
 
-            if (hasInternet()) {
-                mLocation = locationDetailsFromLatLng(latLng)
-            } else {
-                ReCallService.recall(
-                    GET_ADDRESS_AFTER_INTERNET_BACK,
-                    {
-                        mLocation = locationDetailsFromLatLng(latLng)
-                        updateSettings { it.copy(location = mLocation) }
-                    },
-                    application
-                )
-            }
+
+//            if (hasInternet()) {
+//                mLocation = locationDetailsFromLatLng(latLng)
+//            } else {
+//                ReCallService.recall(
+//                    GET_ADDRESS_AFTER_INTERNET_BACK,
+//                    {
+//                        mLocation = locationDetailsFromLatLng(latLng)
+//                        updateSettings { it.copy(location = mLocation) }
+//                    },
+//                    application
+//                )
+//            }
 
             updateSettings { it.copy(location = mLocation) }
         } catch (t: Throwable) {
@@ -179,6 +182,8 @@ class AppStateViewModel(val application: WeatherApplication, private val weather
                     Locale("ar"),
                     Locale("en")
                 )
+
+
 
             val geocoder = Geocoder(application, locale)
             val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)

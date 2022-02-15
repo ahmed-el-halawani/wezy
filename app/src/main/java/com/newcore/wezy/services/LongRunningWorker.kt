@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.*
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.CoroutineWorker
@@ -21,9 +20,11 @@ import com.newcore.wezy.repository.WeatherRepo
 import com.newcore.wezy.shareprefrances.SettingsPreferences
 import com.newcore.wezy.ui.notification.NotificationActivity
 import com.newcore.wezy.utils.Constants.ALERT_BODY
+import com.newcore.wezy.utils.Constants.ALERT_COUNTRY
 import com.newcore.wezy.utils.Constants.ALERT_TITLE
 import com.newcore.wezy.utils.Constants.CHANNEL_ID
 import com.newcore.wezy.utils.Constants.EXTRA_NOTIFICATION_ID_CUSTOM
+import com.newcore.wezy.utils.Constants.IS_ALERT
 import com.newcore.wezy.utils.Constants.MY_ALERT_ID
 import com.newcore.wezy.utils.Constants.MY_ALERT_LAT
 import com.newcore.wezy.utils.Constants.MY_ALERT_LNG
@@ -47,6 +48,7 @@ class LongRunningWorker(context: Context, parameters: WorkerParameters) :
         val lat = inputData.getDouble(MY_ALERT_LAT,0.0)
         val lng = inputData.getDouble(MY_ALERT_LNG,0.0)
         val to = inputData.getLong(MY_ALERT_TO,0)
+        val isAlert = inputData.getBoolean(IS_ALERT,true)
 
         val repo = WeatherRepo(
             SettingsPreferences(applicationContext as WeatherApplication),
@@ -57,57 +59,74 @@ class LongRunningWorker(context: Context, parameters: WorkerParameters) :
 
         val res: Either<WeatherLang, RepoErrors> =  repo.getAlert(applicationContext, LatLng(lat,lng))
 
-        val happyTitle = applicationContext.getString(R.string.happy_title)
-        val happyBody = applicationContext.getString(R.string.happy_body)
+        val happyTitle = ViewHelpers.returnByLanguage(
+            settings.language,
+            "WEZY لديها أخبار سارة لك \uD83D\uDE0A",
+            "WEZY has good news for you \uD83D\uDE0A"
+        )
 
-        Log.e("res from worker", "doWork: $res", )
+        val happyBody = ViewHelpers.returnByLanguage(
+            settings.language,
+            "لا توجد تنبيهات سيئة لهذه المدة ،\n" +
+                    "أتمنى أن تستمتع ببقية يومك",
+            "there is no bad alerts for this duration,\n" +
+                    "hope you enjoy the rest of your day"
+        )
 
-        val title = when(res){
-            is Either.Error -> happyTitle
+        var title = happyTitle
+
+        var body = happyBody
+
+        var country = ""
+
+        when(res){
+            is Either.Error -> {}
             is Either.Success -> {
                 val weather = ViewHelpers.returnByLanguage(
                     settings.language,
                     res.data.arabicResponse,
-                    res.data.englishResponse)
-                    weather?.alerts?.run {
-                        if(isNotEmpty()){
-                            get(0).event
-                        }else{
-                            happyTitle
-                        }
-                    }?:happyTitle
+                    res.data.englishResponse
+                )
 
+                country = weather?.country?:""
+
+                weather?.alerts?.run {
+                    forEach {
+                        val start = ViewHelpers.getDateObjectFromUnix(it.start?.toLong())
+                        val end = ViewHelpers.getDateObjectFromUnix(it.end?.toLong())
+                        if((start!=null && start<=Date(to))||
+                            (end!=null && end<=Date(to))
+                        ){
+                            title = it.event?:""
+                            body = ViewHelpers.returnByLanguage(
+                                settings.language,
+                                "عنوان :"+"$country\n"+"انذار :"+" ${it.description?:""}",
+                                "Address: $country\nAlert: ${it.description?:""}"
+                            )
+                        }
+                    }
+                }
             }
         }
 
-        val body = when(res){
-            is Either.Error -> happyBody
-            is Either.Success -> {
-                val weather = ViewHelpers.returnByLanguage(
-                    settings.language,
-                    res.data.arabicResponse,
-                    res.data.englishResponse)
-                    weather?.alerts?.run {
-                        if(isNotEmpty()){
-                            get(0).description
-                        }else{
-                            happyBody
-                        }
-                    }?:happyBody
-            }
+if(isAlert){
+    val openNotificationDialog = Intent(applicationContext, NotificationActivity::class.java)
+        .apply {
+            putExtra(EXTRA_NOTIFICATION_ID_CUSTOM,notificationId)
+            putExtra(ALERT_TITLE,title)
+            putExtra(ALERT_BODY,body)
+            putExtra(ALERT_COUNTRY,country)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
         }
 
-        val openNotificationDialog = Intent(applicationContext, NotificationActivity::class.java)
-            .apply {
-                putExtra(EXTRA_NOTIFICATION_ID_CUSTOM,notificationId)
-                putExtra(ALERT_TITLE,title)
-                putExtra(ALERT_BODY,body)
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            }
+    pushNotification(openNotificationDialog,notificationId,title,body,country)
 
-        pushNotification(openNotificationDialog,notificationId,title,body)
+    applicationContext.startActivity(openNotificationDialog)
+}else{
+    pushNotification(null,notificationId,title,body,country)
+}
 
-        applicationContext.startActivity(openNotificationDialog)
 
         delay(to - Date().time)
         applicationContext.sendBroadcast(
@@ -155,7 +174,7 @@ class LongRunningWorker(context: Context, parameters: WorkerParameters) :
 
 
     @SuppressLint("LaunchActivityFromNotification")
-    fun pushNotification(openNotificationDialog: Intent, notificationId:Int, title:String, body:String) {
+    fun pushNotification(openNotificationDialog: Intent?, notificationId:Int, title:String, body:String, country:String) {
 
         val snoozeIntent = Intent(applicationContext, StopAlarmBroadcast::class.java)
             .putExtra(EXTRA_NOTIFICATION_ID_CUSTOM, notificationId)
@@ -168,14 +187,16 @@ class LongRunningWorker(context: Context, parameters: WorkerParameters) :
             )
 
         val openAlert: PendingIntent? = TaskStackBuilder.create(applicationContext).run {
-            addNextIntentWithParentStack(openNotificationDialog)
-            getPendingIntent(0, 0)
+            addNextIntentWithParentStack(openNotificationDialog?:Intent())
+            getPendingIntent(notificationId, Intent.FILL_IN_DATA)
         }
 
         val builder: NotificationCompat.Builder = NotificationCompat.Builder(applicationContext,CHANNEL_ID )
             .setSmallIcon(android.R.drawable.stat_notify_sync)
             .setContentTitle(title)
-            .setContentText(body)
+            .setContentText(
+                body
+            )
             .setStyle(NotificationCompat.BigTextStyle())
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setOngoing(true)

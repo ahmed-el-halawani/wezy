@@ -73,6 +73,10 @@ object ViewHelpers {
         return long?.let { timeStr.format(Date(it*1000)) }?:"00, 00 00"
     }
 
+    fun getDateObjectFromUnix(long: Long?):Date?{
+        return long?.let { Date((it)*1000) }
+    }
+
 
     fun getDayFromUnix(long: Long?,language: Language):String{
         val timeStr =
@@ -167,6 +171,14 @@ object ViewHelpers {
 
     fun languageEnumFromLocale(): Language {
         return when (Locale.getDefault().language) {
+            "en" -> Language.English
+            "ar" -> Language.Arabic
+            else -> Language.English
+        }
+    }
+
+    fun languageEnumFromLocale(locale:Locale): Language {
+        return when (locale.language) {
             "en" -> Language.English
             "ar" -> Language.Arabic
             else -> Language.English

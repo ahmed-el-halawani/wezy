@@ -58,7 +58,7 @@ class FavoritesFragment
             favoritesViewModel.deleteWeatherLang(weatherLang)
 
             // set undo option
-            showSnackbar2("remove location done successfully") {
+            showSnackbar2(getString(R.string.remove_location_done)) {
                 favoritesViewModel.addWeatherLang(weatherLang)
             }
         })
@@ -66,8 +66,16 @@ class FavoritesFragment
 
         // observe to live data
         favoritesViewModel.getData().observe(viewLifecycleOwner) { weatherList ->
-            favoritesAdapter.differ.submitList(weatherList
-                .filter { it.id != HOME_WEATHER_ID }.sortedBy { it.id })
+            val weather = weatherList.run {
+                filter { it.id != HOME_WEATHER_ID }.sortedBy { it.id }
+            }
+
+            when(weather.isEmpty()){
+                true->binding.linearHaventAny.visibility = View.VISIBLE
+                false->binding.linearHaventAny.visibility = View.GONE
+            }
+
+            favoritesAdapter.differ.submitList(weather)
         }
 
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<LatLng?>("latLng")
@@ -80,7 +88,10 @@ class FavoritesFragment
         }
 
         binding.floatingActionButton.setOnClickListener {
-            findNavController().navigate(R.id.action_favoriteScreen_to_mapsForFavoriteFragment)
+            if(viewModel.hasInternet())
+                findNavController().navigate(R.id.action_favoriteScreen_to_mapsForFavoriteFragment)
+            else
+                showSnackbar(getString(R.string.we_cant_create_without_internet), anchorView = binding.floatingActionButton)
         }
     }
 
@@ -92,10 +103,7 @@ class FavoritesFragment
     }
 
     fun showSnackbar2(message: String?=null, undoAction: View.OnClickListener) {
-        Snackbar.make(binding.root, message ?: "", Snackbar.LENGTH_LONG).apply {
-            setAction("UNDO", undoAction)
-            show()
-        }
+        showSnackbar(message,undoAction,anchorView = binding.floatingActionButton)
     }
 
 

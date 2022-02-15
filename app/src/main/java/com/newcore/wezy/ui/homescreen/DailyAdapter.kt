@@ -10,6 +10,7 @@ import com.newcore.wezy.WeatherApplication
 import com.newcore.wezy.databinding.ItemNext7DaysBinding
 import com.newcore.wezy.models.weatherentities.Daily
 import com.newcore.wezy.shareprefrances.SettingsPreferences
+import com.newcore.wezy.utils.ApiViewHelper
 import com.newcore.wezy.utils.ViewHelpers
 import com.newcore.wezy.utils.ViewHelpers.convertFromKelvin
 import com.newcore.wezy.utils.ViewHelpers.getDateFromUnix
@@ -47,7 +48,7 @@ class DailyAdapter : RecyclerView.Adapter<DailyAdapter.ViewHolder>() {
                     convertFromKelvin(feelsLike?.day, settings).numberLocalizer(settings.language)
                 tvFeelsLikeTempUnit.text = ViewHelpers.getStringTempUnit(settings.tempUnit)
 
-                Glide.with(root).load(weather[0].icon).into(ivWeatherIcon)
+                Glide.with(root).load(ApiViewHelper.iconImagePathMaker(weather[0].icon?:"")).into(ivWeatherIcon)
             }
         }
     }
@@ -65,8 +66,7 @@ class DailyAdapter : RecyclerView.Adapter<DailyAdapter.ViewHolder>() {
     // when update or change list of items
     private val differCallback = object : DiffUtil.ItemCallback<Daily>() {
         override fun areItemsTheSame(oldItem: Daily, newItem: Daily): Boolean =
-            oldItem.dt == newItem.dt
-
+            oldItem.dt == newItem.dt 
         override fun areContentsTheSame(oldItem: Daily, newItem: Daily): Boolean =
             oldItem == newItem
     }

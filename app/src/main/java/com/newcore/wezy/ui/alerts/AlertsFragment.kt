@@ -1,4 +1,4 @@
-package com.newcore.wezy.ui.searchNews
+package com.newcore.wezy.ui.alerts
 
 import android.content.Intent
 import android.net.Uri
@@ -9,28 +9,20 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
 import com.google.android.material.snackbar.Snackbar
+import com.newcore.wezy.R
 import com.newcore.wezy.WeatherApplication
 import com.newcore.wezy.databinding.FragmentAlertsBinding
 import com.newcore.wezy.localDb.WeatherDatabase
 import com.newcore.wezy.repository.WeatherRepo
-import com.newcore.wezy.services.LongRunningWorker
 import com.newcore.wezy.shareprefrances.SettingsPreferences
 import com.newcore.wezy.ui.BaseFragment
-import com.newcore.wezy.utils.Constants.MY_ALERT_ID
-import com.newcore.wezy.utils.Constants.MY_ALERT_LAT
-import com.newcore.wezy.utils.Constants.MY_ALERT_LNG
-import com.newcore.wezy.utils.Constants.MY_ALERT_TO
 import com.newcore.wezy.utils.ViewHelpers
 import kotlinx.coroutines.launch
-import java.time.Duration
 
 
 class AlertsFragment
-    :BaseFragment<FragmentAlertsBinding>( FragmentAlertsBinding::inflate ) {
+    : BaseFragment<FragmentAlertsBinding>(FragmentAlertsBinding::inflate) {
 
 
     private val alertAdapter by lazy {
@@ -40,9 +32,7 @@ class AlertsFragment
     }
 
 
-
-
-    var afterPermissionFun:(()->Unit)? = null
+    var afterPermissionFun: (() -> Unit)? = null
 
     private val alertsViewModel by lazy {
         ViewModelProvider(
@@ -59,15 +49,17 @@ class AlertsFragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        alertsViewModel.loadingLiveData.observe(viewLifecycleOwner){
-            if(it)
+        val settings = viewModel.getSettings()
+
+        alertsViewModel.loadingLiveData.observe(viewLifecycleOwner) {
+            if (it)
                 showLoading("adding your alert")
             else
                 hideLoading()
 
         }
 
-        mainActivity.activityResultLiveData.observe(viewLifecycleOwner){
+        mainActivity.activityResultLiveData.observe(viewLifecycleOwner) {
             requestOverLayPermission(afterPermissionFun);
         }
 
@@ -81,7 +73,7 @@ class AlertsFragment
             alertsViewModel.deleteAlert(alert)
 
             // set undo option
-            showSnackbar2("remove location done successfully") {
+            showSnackbar2(getString(R.string.remove_alert_done_successfully)) {
                 lifecycleScope.launch {
                     alertsViewModel.addAlert(alert)
                 }
@@ -91,11 +83,18 @@ class AlertsFragment
 
         // observe to live data
         alertsViewModel.getData().observe(viewLifecycleOwner) { alerts ->
+            when(alerts.isEmpty()){
+                true->binding.linearHaventAny.visibility = View.VISIBLE
+                false->binding.linearHaventAny.visibility = View.GONE
+            }
             alertAdapter.differ.submitList(alerts)
         }
 
         binding.floatingActionButton.setOnClickListener {
-            requestOverLayPermission(::showBottomSheetDialog)
+            if (settings.location == null)
+                showSnackbarWithoutAction(requireContext().getString(R.string.looks_like_you_haven_t_set_a_location_yet))
+            else
+                requestOverLayPermission(::showBottomSheetDialog)
         }
 
     }
@@ -113,48 +112,40 @@ class AlertsFragment
         }
     }
 
-    fun showSnackbar2(message: String?=null, undoAction: View.OnClickListener) {
-        Snackbar.make(binding.root, message ?: "", Snackbar.LENGTH_LONG).apply {
-            setAction("UNDO", undoAction)
-            show()
-        }
+    fun showSnackbar2(message: String? = null, undoAction: View.OnClickListener) {
+        showSnackbar(message,undoAction,binding.floatingActionButton)
+//        Snackbar.make(binding.root, message ?: "", Snackbar.LENGTH_LONG).apply {
+//            setAction("UNDO", undoAction)
+//            show()
+//        }
     }
 
-    fun requestOverLayPermission(afterPermission:(()->Unit)?){
+    fun showSnackbarWithoutAction(message: String? = null) {
+        showSnackbar(message, anchorView = binding.floatingActionButton)
+//        Snackbar.make(binding.root, message ?: "", Snackbar.LENGTH_LONG).apply {
+//            show()
+//        }
+    }
+
+    fun requestOverLayPermission(afterPermission: (() -> Unit)?) {
         @Suppress("DEPRECATION")
         if (!Settings.canDrawOverlays(context)) {
             afterPermissionFun = afterPermission
 
             val intent =
-                Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:${context?.packageName}"))
+                Intent(
+                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:${context?.packageName}")
+                )
             startActivityForResult(intent, 500)
-        }else{
-            (afterPermission?:afterPermissionFun)?.invoke()
+        } else {
+            (afterPermission ?: afterPermissionFun)?.invoke()
         }
     }
 
 
-    fun getDateTime(){
+    fun getDateTime() {
 
-    }
-
-
-    fun setupWorker(){
-
-        val data = Data.Builder()
-
-        data.putInt(MY_ALERT_ID,1)
-        data.putDouble(MY_ALERT_LAT,100.0)
-        data.putDouble(MY_ALERT_LNG,300.0)
-        data.putLong(MY_ALERT_TO,100)
-
-        val request = OneTimeWorkRequestBuilder<LongRunningWorker>()
-            .setInitialDelay(Duration.ofMillis(10000L))
-            .setInputData(data.build())
-            .build()
-
-        WorkManager.getInstance(requireContext())
-            .enqueue(request)
     }
 
 

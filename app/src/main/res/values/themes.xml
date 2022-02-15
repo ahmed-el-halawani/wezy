@@ -5,7 +5,6 @@
         <item name="colorPrimaryVariant">@color/surfaceColor</item>
         <item name="colorPrimary">@color/surfaceColor</item>
         <item name="colorPrimaryDark">@color/surfaceColor</item>
-
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>

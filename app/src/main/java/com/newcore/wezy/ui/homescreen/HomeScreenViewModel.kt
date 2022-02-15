@@ -38,6 +38,7 @@ class HomeScreenViewModel(
     }
 
     fun refreshCurrent(afterFinish:(()->Unit)?=null)=viewModelScope.launch {
+
         appStateViewModel.getHomeWeather(appStateViewModel.getSettings().location)
         afterFinish?.invoke()
     }

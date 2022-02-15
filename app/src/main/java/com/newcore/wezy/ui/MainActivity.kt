@@ -1,9 +1,7 @@
 package com.newcore.wezy.ui
 
 import android.Manifest
-import android.app.Activity
-import android.app.NotificationChannel
-import android.app.NotificationManager
+import android.app.*
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -11,6 +9,7 @@ import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION
 import android.provider.Settings.canDrawOverlays
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
@@ -22,8 +21,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.navigateUp
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.snackbar.Snackbar
@@ -32,11 +29,8 @@ import com.newcore.wezy.WeatherApplication
 import com.newcore.wezy.databinding.ActivityMainBinding
 import com.newcore.wezy.localDb.WeatherDatabase
 import com.newcore.wezy.repository.WeatherRepo
-import com.newcore.wezy.services.LongRunningWorker
-import com.newcore.wezy.shareprefrances.DefineLocationType
 import com.newcore.wezy.shareprefrances.Language
 import com.newcore.wezy.shareprefrances.SettingsPreferences
-import com.newcore.wezy.utils.BetterActivityResult
 import com.newcore.wezy.utils.Constants.CHANNEL_ID
 import com.newcore.wezy.utils.Constants.INTERNET_NOT_WORKING
 import com.newcore.wezy.utils.Extensions.setupWithNavController2
@@ -47,14 +41,34 @@ import kotlinx.coroutines.*
 import java.time.Duration
 
 data class ActivityResultData(val requestCode: Int, val resultCode: Int, val data: Intent?)
+data class ActivityPermissionResultData(val requestCode: Int, val permissions: Array<out String>,val grantResults: IntArray) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as ActivityPermissionResultData
+
+        if (requestCode != other.requestCode) return false
+        if (!permissions.contentEquals(other.permissions)) return false
+        if (!grantResults.contentEquals(other.grantResults)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = requestCode
+        result = 31 * result + permissions.contentHashCode()
+        result = 31 * result + grantResults.contentHashCode()
+        return result
+    }
+}
 
 
 class MainActivity : AppCompatActivity(), INetwork {
 
-    var onActivityResult:((Int, Int, Intent?)->Unit)?=null
-
-
     var activityResultLiveData = MutableLiveData<ActivityResultData>()
+
+    var activityPermissionResultData = MutableLiveData<ActivityPermissionResultData>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -104,9 +118,10 @@ class MainActivity : AppCompatActivity(), INetwork {
         ViewModelProvider(this, viewModelFactory)[AppStateViewModel::class.java]
     }
 
-    fun showSnackbar(message: String? = null, undoAction: View.OnClickListener? = null) {
-        Snackbar.make(binding.root, message ?: "", Snackbar.LENGTH_LONG).apply {
+    fun showSnackbar(message: String? = null, undoAction: View.OnClickListener? = null,anchorViews:View?) {
+        Snackbar.make(binding.newsNavHostFragment, message ?: "", Snackbar.LENGTH_LONG).apply {
             undoAction?.let { setAction("UNDO", it) }
+            anchorView = anchorViews?:binding.bottomNavigationView;
             show()
         }
     }
@@ -115,7 +130,7 @@ class MainActivity : AppCompatActivity(), INetwork {
     fun getGpsLocation() {
         appStateViewModel.locationPermissionMutableLiveData.postValue(Resource.Loading())
 
-
+        showLoading("getting location ...")
 
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -133,6 +148,7 @@ class MainActivity : AppCompatActivity(), INetwork {
                 ),
                 200
             )
+            hideLoading()
             return
         }
 
@@ -144,6 +160,7 @@ class MainActivity : AppCompatActivity(), INetwork {
                 override fun onLocationResult(location: LocationResult) {
                     println("(fusedLocationClient.requestLocationUpdates)")
                     super.onLocationResult(location)
+                    hideLoading()
                     appStateViewModel.updateSettingsLocation(
                         LatLng(location.locations[0].latitude, location.locations[0].longitude)
                     )
@@ -194,12 +211,17 @@ class MainActivity : AppCompatActivity(), INetwork {
     }
 
     private fun internetStateObserver() {
-        appStateViewModel.internetState.observe(this@MainActivity) { internetState ->
-            if (internetState.equals(INTERNET_NOT_WORKING))
-                showNoInternet()
-            else
-                hideNoInternet()
+        try {
+            appStateViewModel.internetState.observe(this@MainActivity) { internetState ->
+                if (internetState.equals(INTERNET_NOT_WORKING))
+                    showNoInternet()
+                else
+                    hideNoInternet()
+            }
+        }catch (t:Throwable){
+            Log.e("internetStateObserver", "internetStateObserver: "+t.message )
         }
+
     }
 
     private fun splashScreenFadeOutAnimation() {
@@ -232,15 +254,6 @@ class MainActivity : AppCompatActivity(), INetwork {
             appStateViewModel.getSettings().also { settings ->
                 appStateViewModel.splashDone = true
                 appStateViewModel.settingsMutableLiveData.postValue(settings)
-
-                if (settings.location == null) {
-                    when (settings.defineLocationType) {
-                        DefineLocationType.Gps -> TODO()
-                        DefineLocationType.Maps -> {
-
-                        }
-                    }
-                }
 
                 when (settings.language) {
                     Language.Arabic -> setAppLocale("ar")
@@ -282,23 +295,6 @@ class MainActivity : AppCompatActivity(), INetwork {
     }
 
 
-    fun requestOverLayPermission(){
-        @Suppress("DEPRECATION")
-        if (!canDrawOverlays(this)) {
-            val intent =
-                Intent(ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName"))
-            startActivityForResult(intent, 500)
-        }else{
-            val request = OneTimeWorkRequestBuilder<LongRunningWorker>()
-                .setInitialDelay(Duration.ofMillis(10000L))
-//            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
-                .build()
-
-            WorkManager.getInstance(this)
-                .enqueue(request)
-        }
-    }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -329,6 +325,9 @@ class MainActivity : AppCompatActivity(), INetwork {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        activityPermissionResultData.postValue(ActivityPermissionResultData(requestCode, permissions, grantResults))
+
         if (requestCode == 200) {
             permissions.forEach {
                 println(it)
@@ -350,5 +349,15 @@ class MainActivity : AppCompatActivity(), INetwork {
         }
 
     }
+
+     fun showLoading(message:String?) {
+        dialog = ProgressDialog.show(this, "",message?:"Loading. Please wait...", true);
+    }
+
+     fun hideLoading() {
+        dialog?.dismiss()
+    }
+
+    var dialog: AlertDialog? = null
 
 }

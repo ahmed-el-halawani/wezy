@@ -48,7 +48,6 @@ open class MapsFragment : BaseFragment<FragmentMapsBinding>(FragmentMapsBinding:
         this.googleMap = googleMap;
         init()
 
-
         googleMap.setOnMapClickListener { latLng->
             markers.forEach { it.remove() }
             markers.clear()
@@ -62,32 +61,37 @@ open class MapsFragment : BaseFragment<FragmentMapsBinding>(FragmentMapsBinding:
     }
 
 
+    open fun initDataWithSettings(){
+
+        viewModel.getSettings().location.also { location ->
+            location?.let {
+                googleMap.addMarker(MarkerOptions().position(location.latLng))?.let { markers.add(it) }
+                googleMap.moveCamera(CameraUpdateFactory.newLatLng(location.latLng))
+            }
+
+            if(location?.latLng==null)
+            {
+                binding.tvCountry.text = getString(R.string.locatoin_not_selected)
+                binding.tvLocationLine.text = ""
+                binding.btnSelectLocation.visibility = View.GONE
+            }else{
+                binding.tvCountry.text = location.country ?:""
+                binding.tvLocationLine.text = location.locationName ?:""
+                binding.btnSelectLocation.visibility = View.VISIBLE
+            }
+
+        }
+    }
+
 
     private fun init(){
         binding.apply {
 
-            viewModel.getSettings().location.also { location ->
-                location?.let {
-                    googleMap.addMarker(MarkerOptions().position(location.latLng))?.let { markers.add(it) }
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(location.latLng))
-                }
-
-                if(location?.latLng==null)
-                {
-                    binding.tvCountry.text = getString(R.string.locatoin_not_selected)
-                    binding.tvLocationLine.text = location?.locationName?:""
-                    btnSelectLocation.visibility = View.GONE
-
-                }else{
-                    binding.tvCountry.text = location.country ?:""
-                    binding.tvLocationLine.text = location.locationName ?:""
-                    btnSelectLocation.visibility = View.VISIBLE
-                }
-
-            }
-
+            initDataWithSettings()
 
             mapsViewModel.locationMutableLiveData.observe(viewLifecycleOwner) { locationResource->
+
+                    btnSelectLocation.visibility = View.VISIBLE
 
                     when(locationResource){
                         is Resource.Error -> pbLoading.visibility = View.INVISIBLE
@@ -114,7 +118,7 @@ open class MapsFragment : BaseFragment<FragmentMapsBinding>(FragmentMapsBinding:
 
     open fun onButtonClick(latLng:LatLng?){
         if(latLng!=null){
-            viewModel.updateSettingsLocation(latLng!!)
+            viewModel.updateSettingsLocation(latLng)
         }
         findNavController().popBackStack()
     }

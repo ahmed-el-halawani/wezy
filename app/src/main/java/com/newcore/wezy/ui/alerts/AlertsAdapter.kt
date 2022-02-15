@@ -1,4 +1,4 @@
-package com.newcore.wezy.ui.searchNews
+package com.newcore.wezy.ui.alerts
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,12 +7,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.newcore.wezy.WeatherApplication
 import com.newcore.wezy.databinding.ItemAlertBinding
-import com.newcore.wezy.databinding.ItemFavoriteBinding
 import com.newcore.wezy.models.MyAlert
-import com.newcore.wezy.models.weatherentities.WeatherLang
 import com.newcore.wezy.shareprefrances.SettingsPreferences
 import com.newcore.wezy.utils.ViewHelpers
-import com.newcore.wezy.utils.ViewHelpers.getWeatherFromWeatherLang
 import com.newcore.wezy.utils.ViewHelpers.returnByLanguage
 import java.util.*
 
@@ -40,6 +37,7 @@ class AlertsAdapter : RecyclerView.Adapter<AlertsAdapter.ViewHolder>() {
                 tvCountry.text = returnByLanguage(settings.language,arabicCountryName,englishCountryName)
             }
         }
+
     }
 
     override fun getItemCount(): Int =

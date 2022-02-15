@@ -37,7 +37,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="From"
+                        android:text="@string/start"
                         android:textSize="12sp" />
 
                     <LinearLayout
@@ -73,7 +73,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="To"
+                        android:text="@string/end_in"
                         android:textSize="12sp" />
 
                     <LinearLayout
@@ -116,19 +116,11 @@
                         android:layout_height="@dimen/alerter_alert_icn_size"
                         android:maxWidth="@dimen/alerter_alert_icn_size"
                         android:maxHeight="@dimen/alerter_alert_icn_size"
-                        android:visibility="invisible"
+                        android:visibility="visible"
                         app:srcCompat="@drawable/alerter_ic_notifications"
                         app:tint="@color/alert_default_icon_color"
-                        tools:visibility="visible" />
+                       />
 
-                    <ProgressBar
-                        android:id="@+id/pbProgress"
-                        android:layout_width="@dimen/alerter_alert_progress_size"
-                        android:layout_height="@dimen/alerter_alert_progress_size"
-                        android:indeterminateTint="@android:color/white"
-                        android:progressTint="@android:color/white"
-                        android:visibility="invisible"
-                        tools:visibility="visible" />
 
                 </FrameLayout>
 
