@@ -43,6 +43,21 @@ class HomeScreenViewModel(
         afterFinish?.invoke()
     }
 
+    fun locationChanged2(settings: Settings):Boolean {
+        if (settings == this.settings)
+            return false;
+
+        return if (settings.location?.latLng?.latitude != location?.latLng?.latitude ||
+            settings.location?.latLng?.longitude != location?.latLng?.longitude) {
+            location = settings.location;
+            false
+        }
+        else{
+            this.settings = settings
+            true
+        }
+    }
+
     fun locationChanged(settings: Settings):Boolean {
         println("i am in locationChanged")
 

@@ -7,14 +7,12 @@ import com.google.android.gms.maps.model.LatLng
 import com.newcore.wezy.WeatherApplication
 import com.newcore.wezy.models.weatherentities.WeatherLang
 import com.newcore.wezy.repository.RepoErrors
-import com.newcore.wezy.repository.Utils.getAddresses
 import com.newcore.wezy.repository.WeatherRepo
 import com.newcore.wezy.services.ReCallService
 import com.newcore.wezy.shareprefrances.MLocation
 import com.newcore.wezy.shareprefrances.Settings
 import com.newcore.wezy.ui.homescreen.WeatherState
 import com.newcore.wezy.utils.*
-import com.newcore.wezy.utils.Constants.GET_ADDRESS_AFTER_INTERNET_BACK
 import com.newcore.wezy.utils.Constants.INTERNET_NOT_WORKING
 import com.newcore.wezy.utils.Constants.INTERNET_WORKING
 import kotlinx.coroutines.Dispatchers
@@ -52,19 +50,18 @@ class AppStateViewModel(val application: WeatherApplication, private val weather
         if (location == null) {
             weatherLangLiveData.postValue(WeatherState.NOLocationInSettings())
         } else {
-            if (hasInternet()) {
-                val res = weatherRepo.getOrUpdateHomeWeatherLang(application, location.latLng);
-                val weatherState = handleHomeWeatherResponse(res);
-                withContext(Dispatchers.Main) {
-                    weatherLangLiveData.postValue(weatherState)
-                }
-            }else {
+            var res = weatherRepo.getOrUpdateHomeWeatherLang(application, location.latLng);
+            var weatherState = handleHomeWeatherResponse(res);
+            withContext(Dispatchers.Main) {
+                weatherLangLiveData.postValue(weatherState)
+            }
+            if (!hasInternet())  {
                 ReCallService.recall(
                     Constants.GET_OR_REFRESH_HOME_WITH_DATA,
                     {
                         weatherLangLiveData.postValue(WeatherState.Loading())
-                        val res = weatherRepo.getOrUpdateHomeWeatherLang(application, location.latLng);
-                        val weatherState = handleHomeWeatherResponse(res);
+                        res = weatherRepo.getOrUpdateHomeWeatherLang(application, location.latLng);
+                        weatherState = handleHomeWeatherResponse(res);
                         withContext(Dispatchers.Main) {
                             weatherLangLiveData.postValue(weatherState)
                         }

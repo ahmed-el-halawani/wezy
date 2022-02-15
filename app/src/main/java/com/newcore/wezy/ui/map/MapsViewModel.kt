@@ -57,13 +57,18 @@ class MapsViewModel(val app: Application) : AndroidViewModel(app) {
 
         CoroutineScope(Dispatchers.IO).launch {
             if (appStateViewModel.hasInternet()) {
-                val address = Utils.getAddresses(app, latLng, locale)
-                if (address != null&&address.isNotEmpty()) {
-                    val name = "${address[0].countryName}, ${address[0].adminArea}"
+                val address = Utils.getAddresses2(app, latLng)
+                if (address != null) {
+                   val address2 = ViewHelpers.returnByLanguage(
+                       appStateViewModel.getSettings().language,
+                       address.arabicResponse,
+                       address.englishResponse
+                   )
+                    val name = address2?.timezone?.split("/")?.get(1) ?:""
                     withContext(Dispatchers.Main) {
                         locationMutableLiveData.postValue(
                             Resource.Success(
-                                MLocation(latLng, name, address[0].countryName)
+                                MLocation(latLng, address2?.timezone, name)
                             )
                         )
                     }

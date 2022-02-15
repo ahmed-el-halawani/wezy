@@ -109,23 +109,18 @@ class HomeScreenFragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initHomeViewModel()
-        if(viewModel.hasInternet()){
 
-            viewModel.settingsMutableLiveData.observe(viewLifecycleOwner) { settings ->
-                if( homeScreenViewModel.locationChanged(settings)){
-                    CoroutineScope(Dispatchers.IO).launch{
-                        delay(500)
-                        withContext(Dispatchers.Main){
-                            setupRecycleView()
-                            setupDailyRecycleView()
-                        }
+        viewModel.settingsMutableLiveData.observe(viewLifecycleOwner) { settings ->
+            if( homeScreenViewModel.locationChanged(settings)){
+                CoroutineScope(Dispatchers.IO).launch{
+                    delay(500)
+                    withContext(Dispatchers.Main){
+                        setupRecycleView()
+                        setupDailyRecycleView()
                     }
                 }
-
-
             }
         }
-
 
         binding.srlRefreshWeather.setOnRefreshListener {
             if(viewModel.hasInternet())
@@ -133,7 +128,6 @@ class HomeScreenFragment
             else
                 hideLoading()
         }
-
 
         viewModel.weatherLangLiveData.observe(viewLifecycleOwner) { weatherState ->
             val settings = viewModel.getSettings();
