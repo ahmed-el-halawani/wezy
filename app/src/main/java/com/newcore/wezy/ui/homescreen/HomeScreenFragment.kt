@@ -123,10 +123,7 @@ class HomeScreenFragment
         }
 
         binding.srlRefreshWeather.setOnRefreshListener {
-            if(viewModel.hasInternet())
-                homeScreenViewModel.refreshCurrent(::hideLoading)
-            else
-                hideLoading()
+            homeScreenViewModel.refreshCurrent(::hideLoading)
         }
 
         viewModel.weatherLangLiveData.observe(viewLifecycleOwner) { weatherState ->
@@ -147,15 +144,15 @@ class HomeScreenFragment
                 is WeatherState.NoInternetConnection -> hideLoading().also {}
 
                 is WeatherState.NoWeatherWasFound -> hideLoading().also {
-                    Snackbar.make(binding.srlRefreshWeather, getString(R.string.no_weather_ws_found), Snackbar.LENGTH_LONG).apply {
-                        show()
-                    }
+//                    Snackbar.make(binding.srlRefreshWeather, getString(R.string.no_weather_ws_found), Snackbar.LENGTH_LONG).apply {
+//                        show()
+//                    }
 
                 }
                 is WeatherState.ServerError -> hideLoading().also {
-                    Snackbar.make(binding.srlRefreshWeather, getString(R.string.server_error), Snackbar.LENGTH_LONG).apply {
-                        show()
-                    }
+//                    Snackbar.make(binding.srlRefreshWeather, getString(R.string.server_error), Snackbar.LENGTH_LONG).apply {
+//                        show()
+//                    }
                 }
 
                 is WeatherState.Success -> {

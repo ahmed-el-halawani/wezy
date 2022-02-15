@@ -28,6 +28,7 @@ import java.util.*
 private fun Calendar.setHourMinute(hourOfDay: Int, minute: Int): Calendar {
     this.set(Calendar.HOUR_OF_DAY, hourOfDay)
     this.set(Calendar.MINUTE, minute)
+    this.set(Calendar.SECOND,0)
     return this
 }
 
