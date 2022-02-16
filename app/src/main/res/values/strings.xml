@@ -79,4 +79,5 @@ hope you enjoy the rest of your day</string>
     <string name="server_error">server error</string>
     <string name="we_cant_create_without_internet">we cant create favorite without internet</string>
     <string name="cant_get_country_name">cant get country name but location added successfully</string>
+    <string name="clouds">Clouds</string>
 </resources>

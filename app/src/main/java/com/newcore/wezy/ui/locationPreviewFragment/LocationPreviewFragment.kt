@@ -187,9 +187,9 @@ class LocationPreviewFragment
                                 tvPressure.text = pressure?.numberLocalizer(settings.language)
 
                                 tvUv.text = uvi?.numberLocalizer(settings.language)
+
+                                tvCloud.text = clouds?.numberLocalizer(settings.language)
                             }
-
-
 
                         }
                     }
@@ -197,7 +197,6 @@ class LocationPreviewFragment
 
                 }
             }
-
         }
 
     }
