@@ -14,7 +14,8 @@ Supports API Level +26
 Use OpenWeatherMap API  
 Support two language. English & Arabic  
 Use locale Database  
-Demo application is available in Release  
+
+##Demo application is available in <a href="https://github.com/ahmedgomaa97/wezy/releases/tag/v1.0">Release</a>  
 
 ## Screenshot
 
