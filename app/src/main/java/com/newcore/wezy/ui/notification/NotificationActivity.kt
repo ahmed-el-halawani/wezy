@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -38,10 +39,20 @@ class NotificationActivity : AppCompatActivity() {
         intent.getStringExtra(ALERT_COUNTRY)
     }
 
+    val media by lazy{
+        MediaPlayer.create(this, R.raw.alert)
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        media.isLooping = true
+        media.start()
+
+
+
         window.statusBarColor = getColor(R.color.transparent)
         window.navigationBarColor = getColor(R.color.transparent)
 
@@ -92,6 +103,12 @@ class NotificationActivity : AppCompatActivity() {
             this@NotificationActivity.overridePendingTransition(androidx.constraintlayout.widget.R.anim.abc_fade_in,
                 com.tapadoo.alerter.R.anim.alerter_slide_out_to_top);
         }
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        media.stop()
     }
 
 }

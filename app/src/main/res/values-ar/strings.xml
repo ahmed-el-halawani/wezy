@@ -73,6 +73,7 @@
     <string name="we_cant_create_without_internet">لا يمكننا إنشاء المفضلة بدون الإنترنت</string>
     <string name="cant_get_country_name">لا يمكن الحصول على اسم البلد ولكن تمت إضافة الموقع بنجاح</string>
     <string name="clouds">السحب</string>
+    <string name="overlay_permission">لا يمكننا إنشاء تنبيه دون قبول الاذن</string>
 
 
 </resources>

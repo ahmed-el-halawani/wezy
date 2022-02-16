@@ -21,9 +21,9 @@
     <string name="favorite">Favorite</string>
     <string name="home">Home</string>
     <string name="alarm">Alarm</string>
-    <string name="cantFindCountyName">Cant find Country name</string>
+    <string name="cantFindCountyName">can not find Country name</string>
     <string name="default_language">Default</string>
-    <string name="cant_find_country_name">cant find country name</string>
+    <string name="cant_find_country_name">can not find country name</string>
     <string name="sunset">🌇 Sunset</string>
     <string name="sunrise">🌅 Sunrise</string>
     <string name="divider" translatable="false">.</string>
@@ -77,7 +77,8 @@ hope you enjoy the rest of your day</string>
     <string name="remove_alert_done_successfully">remove alert done successfully</string>
     <string name="no_weather_ws_found">No Weather Was Found</string>
     <string name="server_error">server error</string>
-    <string name="we_cant_create_without_internet">we cant create favorite without internet</string>
-    <string name="cant_get_country_name">cant get country name but location added successfully</string>
+    <string name="we_cant_create_without_internet">we can not create favorite without internet</string>
+    <string name="cant_get_country_name">can not get country name but location added successfully</string>
     <string name="clouds">Clouds</string>
+    <string name="overlay_permission">we can not create alert without accept overlay permission</string>
 </resources>

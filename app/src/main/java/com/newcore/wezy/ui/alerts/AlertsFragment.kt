@@ -53,14 +53,19 @@ class AlertsFragment
 
         alertsViewModel.loadingLiveData.observe(viewLifecycleOwner) {
             if (it)
-                showLoading("adding your alert")
+                showLoading(getString(R.string.loading))
             else
                 hideLoading()
-
         }
 
         mainActivity.activityResultLiveData.observe(viewLifecycleOwner) {
-            requestOverLayPermission(afterPermissionFun);
+            if(it.requestCode == 500){
+                if(Settings.canDrawOverlays(context)){
+                    requestOverLayPermission(afterPermissionFun);
+                }else{
+                    showSnackbarWithoutAction(getString(R.string.overlay_permission))
+                }
+            }
         }
 
 
