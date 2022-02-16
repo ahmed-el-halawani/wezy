@@ -13,7 +13,6 @@ import com.newcore.wezy.shareprefrances.MLocation
 import com.newcore.wezy.shareprefrances.Settings
 import com.newcore.wezy.ui.homescreen.WeatherState
 import com.newcore.wezy.utils.*
-import com.newcore.wezy.utils.Constants.GET_ADDRESS_AFTER_INTERNET_BACK
 import com.newcore.wezy.utils.Constants.INTERNET_NOT_WORKING
 import com.newcore.wezy.utils.Constants.INTERNET_WORKING
 import kotlinx.coroutines.Dispatchers
@@ -56,8 +55,7 @@ class AppStateViewModel(val application: WeatherApplication, private val weather
             withContext(Dispatchers.Main) {
                 weatherLangLiveData.postValue(weatherState)
             }
-
-            if (!hasInternet()) {
+            if (!hasInternet())  {
                 ReCallService.recall(
                     Constants.GET_OR_REFRESH_HOME_WITH_DATA,
                     {
@@ -91,6 +89,7 @@ class AppStateViewModel(val application: WeatherApplication, private val weather
 
 
     fun hasInternet(): Boolean {
+//        return false
         return if (NetworkingHelper.hasInternet(application)) {
             internetState.postValue(INTERNET_WORKING)
             true
@@ -118,7 +117,7 @@ class AppStateViewModel(val application: WeatherApplication, private val weather
             splashScreenLiveData.postValue(true)
         }
 
-        delay(500)
+        delay(2000)
         getHomeWeather(location)
 
     }
@@ -148,20 +147,21 @@ class AppStateViewModel(val application: WeatherApplication, private val weather
     fun updateSettingsLocation(latLng: LatLng) {
 
         try {
-            var mLocation = MLocation(latLng, "", "")
+            val mLocation = MLocation(latLng, "", "")
 
-            if (hasInternet()) {
-                mLocation = locationDetailsFromLatLng(latLng)
-            } else {
-                ReCallService.recall(
-                    GET_ADDRESS_AFTER_INTERNET_BACK,
-                    {
-                        mLocation = locationDetailsFromLatLng(latLng)
-                        updateSettings { it.copy(location = mLocation) }
-                    },
-                    application
-                )
-            }
+
+//            if (hasInternet()) {
+//                mLocation = locationDetailsFromLatLng(latLng)
+//            } else {
+//                ReCallService.recall(
+//                    GET_ADDRESS_AFTER_INTERNET_BACK,
+//                    {
+//                        mLocation = locationDetailsFromLatLng(latLng)
+//                        updateSettings { it.copy(location = mLocation) }
+//                    },
+//                    application
+//                )
+//            }
 
             updateSettings { it.copy(location = mLocation) }
         } catch (t: Throwable) {
@@ -179,6 +179,8 @@ class AppStateViewModel(val application: WeatherApplication, private val weather
                     Locale("ar"),
                     Locale("en")
                 )
+
+
 
             val geocoder = Geocoder(application, locale)
             val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)

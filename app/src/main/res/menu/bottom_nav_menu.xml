@@ -15,7 +15,7 @@
 
     <item
         android:id="@+id/alertsScreen"
-        android:icon="@drawable/ic_all_news"
+        android:icon="@drawable/ic_alert"
         android:title="@string/alarm" />
     <item
         android:id="@+id/settingsFragment"

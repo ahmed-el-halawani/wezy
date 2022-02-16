@@ -23,14 +23,16 @@ import com.newcore.wezy.utils.Resource
 
 class MapsForFavoriteFragment : MapsFragment() {
 
-    override fun onButtonClick(latLng: LatLng?) {
-        println(latLng)
-        Log.e("MapsForFavoriteFragment", "onButtonClick: "+latLng)
+    override fun initDataWithSettings() {
+        binding.tvCountry.text = getString(R.string.locatoin_not_selected)
+        binding.tvLocationLine.text = ""
+        binding.btnSelectLocation.visibility = View.GONE
+    }
 
+    override fun onButtonClick(latLng: LatLng?) {
         findNavController().apply {
             previousBackStackEntry?.savedStateHandle?.set("latLng", latLng)
             popBackStack()
         }
-
     }
 }

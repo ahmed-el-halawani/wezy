@@ -9,7 +9,11 @@
         android:name="com.newcore.wezy.ui.homescreen.HomeScreenFragment"
         android:label="HomeScreenFragment"
         tools:layout="@layout/fragment_home_screen"
-        />
+        >
+        <action
+            android:id="@+id/action_homeScreenFragment_to_mapsFragment"
+            app:destination="@id/mapsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/locationPreviewFragment"
         android:name="com.newcore.wezy.ui.locationPreviewFragment.LocationPreviewFragment"
@@ -37,8 +41,9 @@
     </fragment>
     <fragment
         android:id="@+id/alertsScreen"
-        android:name="com.newcore.wezy.ui.searchNews.AlertsFragment"
+        android:name="com.newcore.wezy.ui.alerts.AlertsFragment"
         android:label="AlertsScreen"
+        tools:layout="@layout/fragment_alerts"
 
         />
     <fragment

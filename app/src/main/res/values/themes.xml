@@ -5,7 +5,6 @@
         <item name="colorPrimaryVariant">@color/surfaceColor</item>
         <item name="colorPrimary">@color/surfaceColor</item>
         <item name="colorPrimaryDark">@color/surfaceColor</item>
-
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
@@ -16,6 +15,7 @@
         <!-- Customize your theme here. -->
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="radioButtonStyle">@style/Widget.App.RadioButton</item>
+        <item name="materialTimePickerStyle">@style/Widget.Material3.MaterialTimePicker.Button</item>
 
         <item name="android:windowBackground">?attr/colorPrimary</item>
         <item name="colorOnBackground">@color/white</item>
@@ -24,7 +24,6 @@
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:textColorSecondary">@color/white</item>
         <item name="android:textColorTertiary">@color/white</item>
-        <item name="textFillColor">@color/white</item>
         <item name="tooltipForegroundColor">@color/white</item>
 
 
@@ -50,8 +49,33 @@
     </style>
 
 
+    <style name="Widget.Material3.MaterialTimePicker.Button">
+        <item name="android:textColor">#fff</item>
+    </style>
+
+<!--    <style name="myTimePickerStyle" parent="@android:style/Widget.Material.Light.TimePicker">-->
+<!--        <item name="android:buttonStyle"></item>-->
+<!--    </style>-->
 
     <style name="SplashTheme" parent="Theme.wezy">
         <item name="android:windowBackground">@drawable/splash_background</item>
+    </style>
+
+    <style name="Theme.Transparent" parent="android:Theme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+    <style name="Theme.AppCompat.Translucent" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:background">#00000000</item> <!-- Or any transparency or color you need -->
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation</item>
     </style>
 </resources>

@@ -111,29 +111,29 @@ class LocationPreviewFragment
                 is WeatherState.Loading -> showLoading()
                 is WeatherState.NOLocationInSettings -> hideLoading().also {
                     println("need to set location")
-                    Snackbar.make(view, "need to set location", Snackbar.LENGTH_LONG).apply {
-                        show()
-                    }
+//                    Snackbar.make(view, "need to set location", Snackbar.LENGTH_LONG).apply {
+//                        show()
+//                    }
                 }
                 is WeatherState.NoInternetConnection -> hideLoading().also {
                     println("No Internet Connection")
-                    Snackbar.make(view, "No Internet Connection", Snackbar.LENGTH_LONG).apply {
-                        show()
-                    }
+//                    Snackbar.make(view, "No Internet Connection", Snackbar.LENGTH_LONG).apply {
+//                        show()
+//                    }
 
                 }
                 is WeatherState.NoWeatherWasFound -> hideLoading().also {
                     println("No Weather Was Found")
-                    Snackbar.make(view, "No Weather Was Found", Snackbar.LENGTH_LONG).apply {
-                        show()
-                    }
+//                    Snackbar.make(view, "No Weather Was Found", Snackbar.LENGTH_LONG).apply {
+//                        show()
+//                    }
 
                 }
                 is WeatherState.ServerError -> hideLoading().also {
                     println("server error")
-                    Snackbar.make(view, "server error", Snackbar.LENGTH_LONG).apply {
-                        show()
-                    }
+//                    Snackbar.make(view, "server error", Snackbar.LENGTH_LONG).apply {
+//                        show()
+//                    }
 
                 }
                 is WeatherState.Success -> {

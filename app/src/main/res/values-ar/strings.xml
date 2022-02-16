@@ -49,4 +49,29 @@
     <string name="search_here">ابحث هنا</string>
     <string name="please_wait">انتظر من فضلك …</string>
     <string name="preparing_your_weather_details">يقوم بتجهيز بيانات الطقس</string>
+    <string name="inform_me_with">نبهني عن طريق</string>
+    <string name="alert">منبه</string>
+    <string name="start_duration">بداية الفترة</string>
+    <string name="end_duration">نهاية الفترة</string>
+    <string name="from_now">من الان</string>
+    <string name="cancel">ألغاء</string>
+    <string name="save">حفظ</string>
+    <string name="happy_title">WEZY لديها أخبار سارة لك 😊</string>
+    <string name="happy_body">لا توجد تنبيهات سيئة لهذه المدة ،
+أتمنى أن تستمتع ببقية يومك</string>
+    <string name="looks_like_you_haven_t_set_a_location_yet">يبدو انك لم تحدد موقعا بعد</string>
+    <string name="set_my_location_by">تعيين موقعي بواسطة</string>
+    <string name="you_haven_t_any_alarms">ليس لديك أي منبهات</string>
+    <string name="you_haven_t_any_favorites">ليس لديك أي مفضلات</string>
+    <string name="start">البداية من</string>
+    <string name="end_in">الي</string>
+    <string name="loading">جار التحميل. أرجو الإنتظار…</string>
+    <string name="remove_location_done">تمت إزالة الموقع بنجاح</string>
+    <string name="remove_alert_done_successfully">تمت إزالة التنبيه بنجاح</string>
+    <string name="no_weather_ws_found">لم يتم العثور على طقس</string>
+    <string name="server_error">خطأ في الخادم</string>
+    <string name="we_cant_create_without_internet">لا يمكننا إنشاء المفضلة بدون الإنترنت</string>
+    <string name="cant_get_country_name">لا يمكن الحصول على اسم البلد ولكن تمت إضافة الموقع بنجاح</string>
+
+
 </resources>

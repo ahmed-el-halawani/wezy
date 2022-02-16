@@ -54,6 +54,29 @@
     <string name="locatoin_not_selected">location Not selected yet</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="search_here">Search here</string>
-    <string name="please_wait">please wait ...</string>
+    <string name="please_wait">please wait …</string>
     <string name="preparing_your_weather_details">preparing your weather details</string>
+    <string name="inform_me_with">Notify me by</string>
+    <string name="alert">Alarm</string>
+    <string name="start_duration">Start duration</string>
+    <string name="end_duration">End duration</string>
+    <string name="from_now">From Now</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="happy_title">WEZY has good news for you 😊</string>
+    <string name="happy_body">there is no bad alerts for this duration,
+hope you enjoy the rest of your day</string>
+    <string name="looks_like_you_haven_t_set_a_location_yet">Looks like you haven\'t set a location yet</string>
+    <string name="set_my_location_by">Set my location by</string>
+    <string name="you_haven_t_any_alarms">You haven\'t any alarms</string>
+    <string name="you_haven_t_any_favorites">You haven\'t any favorites</string>
+    <string name="start">Start from</string>
+    <string name="end_in">To</string>
+    <string name="loading">Loading. Please wait…</string>
+    <string name="remove_location_done">remove location done successfully</string>
+    <string name="remove_alert_done_successfully">remove alert done successfully</string>
+    <string name="no_weather_ws_found">No Weather Was Found</string>
+    <string name="server_error">server error</string>
+    <string name="we_cant_create_without_internet">we cant create favorite without internet</string>
+    <string name="cant_get_country_name">cant get country name but location added successfully</string>
 </resources>

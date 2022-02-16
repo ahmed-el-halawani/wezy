@@ -34,20 +34,23 @@ class HourlyAdapter : RecyclerView.Adapter<HourlyAdapter.ViewHolder>() {
 
         val item = differ.currentList[position]
         holder.binding.apply {
-            tvHour.text = ViewHelpers.getHourFromUnix(item.dt?.toLong(), settings.language)
+            item.apply {
+                tvHour.text = ViewHelpers.getHourFromUnix(dt?.toLong(), settings.language)
 
-            tvTemp.text = convertFromKelvin(item.temp,settings)
-                .numberLocalizer(settings.language)
+                tvTemp.text = convertFromKelvin(temp,settings)
+                    .numberLocalizer(settings.language)
 
 
-            item.weather.let {
-                if (it.isNotEmpty())
-                    Glide.with(root).load(it[0].icon?.let { icon ->
-                        ApiViewHelper.iconImagePathMaker(icon)
-                    }).into(ivIcon)
+                weather.let {
+                    if (it.isNotEmpty())
+                        Glide.with(root).load(it[0].icon?.let { icon ->
+                            ApiViewHelper.iconImagePathMaker(icon)
+                        }).into(ivIcon)
+                }
+
+                tvTempUnit.text = ViewHelpers.getStringTempUnit(settings.tempUnit)
             }
 
-            tvTempUnit.text = ViewHelpers.getStringTempUnit(settings.tempUnit)
         }
     }
 
@@ -56,7 +59,7 @@ class HourlyAdapter : RecyclerView.Adapter<HourlyAdapter.ViewHolder>() {
 
 
     // set listeners
-    fun setOnItemClickListener(onItemClickListener: ((Daily) -> Unit)?) {
+    fun setOnItemClickListener(onItemClickListener: ((Hourly) -> Unit)?) {
         this.onItemClickListener = onItemClickListener
     }
 
@@ -67,12 +70,12 @@ class HourlyAdapter : RecyclerView.Adapter<HourlyAdapter.ViewHolder>() {
             oldItem.dt == newItem.dt
 
         override fun areContentsTheSame(oldItem: Hourly, newItem: Hourly): Boolean =
-            oldItem != newItem
+            oldItem == newItem
     }
 
     val differ = AsyncListDiffer(this, differCallback)
 
 
     // private vars
-    private var onItemClickListener: ((Daily) -> Unit)? = null
+    private var onItemClickListener: ((Hourly) -> Unit)? = null
 }

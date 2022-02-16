@@ -14,7 +14,6 @@ import java.util.*
 )
 data class WeatherLang (
 
-
     @PrimaryKey var id: String,
     var lat: Double? = null,
     var lon: Double? = null,

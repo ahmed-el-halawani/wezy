@@ -1,6 +1,7 @@
 package com.newcore.wezy.models.weatherentities
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 
 data class Alerts(
@@ -12,4 +13,4 @@ data class Alerts(
     @SerializedName("description") var description: String? = null,
     @SerializedName("tags") var tags: ArrayList<String> = arrayListOf()
 
-)
+):Serializable

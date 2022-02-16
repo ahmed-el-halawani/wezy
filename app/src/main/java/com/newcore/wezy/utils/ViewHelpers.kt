@@ -52,6 +52,13 @@ object ViewHelpers {
         return long?.let { timeStr.format(Date(it*1000)) }?:"00:00"
     }
 
+    fun getTimeFromDate(date:Date,language: Language):String{
+        val timeStr =
+            SimpleDateFormat("hh:mm aa", localeFromLanguage(language))
+
+        return timeStr.format(date)
+    }
+
     fun getHourFromUnix(long: Long?,language: Language):String{
         val timeStr =
             SimpleDateFormat("hhaa", localeFromLanguage(language))
@@ -64,6 +71,10 @@ object ViewHelpers {
             SimpleDateFormat("EE, d MMM", localeFromLanguage(language))
 
         return long?.let { timeStr.format(Date(it*1000)) }?:"00, 00 00"
+    }
+
+    fun getDateObjectFromUnix(long: Long?):Date?{
+        return long?.let { Date((it)*1000) }
     }
 
 
@@ -160,6 +171,14 @@ object ViewHelpers {
 
     fun languageEnumFromLocale(): Language {
         return when (Locale.getDefault().language) {
+            "en" -> Language.English
+            "ar" -> Language.Arabic
+            else -> Language.English
+        }
+    }
+
+    fun languageEnumFromLocale(locale:Locale): Language {
+        return when (locale.language) {
             "en" -> Language.English
             "ar" -> Language.Arabic
             else -> Language.English

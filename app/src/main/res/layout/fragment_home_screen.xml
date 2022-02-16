@@ -19,358 +19,379 @@
             android:layout_height="wrap_content">
 
             <FrameLayout
-                android:id="@+id/lit"
+                android:id="@+id/flNoLocation"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#08FFFFFF"
                 android:visibility="gone">
 
+                <include
+                    android:id="@+id/incNoLocation"
+                    layout="@layout/include_no_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
             </FrameLayout>
 
-            <com.jetradarmobile.snowfall.SnowfallView
-                android:id="@+id/rainy"
+            <FrameLayout
+                android:id="@+id/flContent"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="visible"
-                app:snowflakeAlphaMax="60"
-                app:snowflakeAlphaMin="40"
-                app:snowflakeAngleMax="5"
-                app:snowflakeSizeMax="2dp"
-                app:snowflakeSizeMin="1dp"
-                app:snowflakeSpeedMax="25"
-                app:snowflakeSpeedMin="10"
-                app:snowflakesAlreadyFalling="true"
-                app:snowflakesFadingEnabled="true"
-                app:snowflakesNum="250" />
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:visibility="visible">
 
-            <com.jetradarmobile.snowfall.SnowfallView
-                android:id="@+id/snow"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="visible"
-                app:snowflakeAlphaMax="90"
-                app:snowflakeAlphaMin="50"
-                app:snowflakeAngleMax="5"
-                app:snowflakeSizeMax="5dp"
-                app:snowflakeSizeMin="2dp"
-                app:snowflakeSpeedMax="5"
-                app:snowflakeSpeedMin="1"
-                app:snowflakesAlreadyFalling="true"
-                app:snowflakesFadingEnabled="true"
-                app:snowflakesNum="250" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent">
-
-
-                <LinearLayout
-                    android:id="@+id/linearLayout2"
+                <FrameLayout
+                    android:id="@+id/lit"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingVertical="10dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    android:layout_height="match_parent"
+                    android:background="#08FFFFFF"
+                    android:visibility="gone">
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="0dp"
+                </FrameLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent">
+
+
+                    <LinearLayout
+                        android:id="@+id/linearLayout2"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_weight="2">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingVertical="10dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
 
-                        <TextView
-                            android:id="@+id/tvDescription"
-                            android:layout_width="wrap_content"
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="5dp"
-                            tools:text="@string/light_rain"
-                            android:textAlignment="center"
-                            android:textSize="30sp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <LinearLayout
-                            android:id="@+id/linearLayout"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:orientation="horizontal"
-                            app:layout_constraintEnd_toEndOf="@+id/tvDescription"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toStartOf="@+id/tvDescription"
-                            app:layout_constraintTop_toBottomOf="@+id/tvDescription">
+                            android:layout_gravity="center"
+                            android:layout_weight="2">
 
                             <TextView
-                                android:id="@+id/textView10"
+                                android:id="@+id/tvDescription"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="5dp"
+                                android:textAlignment="center"
+                                android:textSize="30sp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                tools:text="@string/light_rain" />
+
+                            <LinearLayout
+                                android:id="@+id/linearLayout"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:orientation="horizontal"
+                                app:layout_constraintEnd_toEndOf="@+id/tvDescription"
+                                app:layout_constraintHorizontal_bias="0.5"
+                                app:layout_constraintStart_toStartOf="@+id/tvDescription"
+                                app:layout_constraintTop_toBottomOf="@+id/tvDescription">
+
+                                <TextView
+                                    android:id="@+id/textView10"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="5dp"
+                                    android:text="@string/feels_like"
+                                    android:textSize="16sp" />
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layoutDirection="ltr"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:id="@+id/tvFeelsLike"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:textSize="16sp"
+                                        tools:text="@string/placeHolderFeelsTemp" />
+
+                                    <TextView
+                                        android:id="@+id/tvTempUnit2"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="@string/placeHolderTempUnit"
+                                        android:textAlignment="gravity"
+                                        android:textDirection="ltr"
+                                        android:textSize="6sp"
+                                        app:layout_constraintLeft_toRightOf="@+id/tvTemp"
+                                        app:layout_constraintTop_toTopOf="@+id/tvTemp" />
+                                </LinearLayout>
+
+                            </LinearLayout>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <ImageView
+                            android:id="@+id/ivIcon"
+                            android:layout_width="0dp"
+                            android:layout_height="100dp"
+                            android:layout_weight="1"
+                            android:scaleType="centerCrop"
+                            tools:srcCompat="@drawable/defalut_icon" />
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/constraintLayout"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2">
+
+                            <TextView
+                                android:id="@+id/tvDayViewer"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="5dp"
-                                android:text="@string/feels_like"
-                                android:textSize="16sp" />
+                                android:fontFamily="sans-serif"
+                                android:textSize="34sp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                tools:text="Today" />
 
-                            <LinearLayout
+                            <TextView
+                                android:id="@+id/tvDate"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layoutDirection="ltr"
-                                android:orientation="horizontal">
+                                android:layout_marginTop="5dp"
+                                android:textSize="16sp"
+                                app:layout_constraintEnd_toEndOf="@+id/tvDayViewer"
+                                app:layout_constraintStart_toStartOf="@+id/tvDayViewer"
+                                app:layout_constraintTop_toBottomOf="@+id/tvDayViewer"
+                                tools:text="@string/placeHolderDate" />
 
-                                <TextView
-                                    android:id="@+id/tvFeelsLike"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    tools:text="@string/placeHolderFeelsTemp"
-                                    android:textSize="16sp" />
-
-                                <TextView
-                                    android:id="@+id/tvTempUnit2"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
-                                    android:fontFamily="sans-serif-light"
-                                    android:text="@string/placeHolderTempUnit"
-                                    android:textAlignment="gravity"
-                                    android:textDirection="ltr"
-                                    android:textSize="6sp"
-                                    app:layout_constraintLeft_toRightOf="@+id/tvTemp"
-                                    app:layout_constraintTop_toTopOf="@+id/tvTemp" />
-                            </LinearLayout>
-
-                        </LinearLayout>
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <ImageView
-                        android:id="@+id/ivIcon"
-                        android:layout_width="0dp"
-                        android:layout_height="100dp"
-                        android:layout_weight="1"
-                        android:scaleType="centerCrop"
-                        tools:srcCompat="@drawable/defalut_icon" />
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/constraintLayout"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2">
-
-                        <TextView
-                            android:id="@+id/tvDayViewer"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="5dp"
-                            android:fontFamily="sans-serif"
-                            tools:text="Today"
-                            android:textSize="34sp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:id="@+id/tvDate"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            tools:text="@string/placeHolderDate"
-                            android:textSize="16sp"
-                            app:layout_constraintEnd_toEndOf="@+id/tvDayViewer"
-                            app:layout_constraintStart_toStartOf="@+id/tvDayViewer"
-                            app:layout_constraintTop_toBottomOf="@+id/tvDayViewer" />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/tvTemp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-light"
-                    tools:text="@string/placeHolderTemp"
-                    android:textDirection="ltr"
-                    android:textSize="130sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.501"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
-
-                <TextView
-                    android:id="@+id/tvTempUnit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
-                    android:fontFamily="sans-serif-light"
-                    android:text="@string/placeHolderTempUnit"
-                    android:textAlignment="gravity"
-                    android:textDirection="ltr"
-                    android:textSize="20sp"
-                    app:layout_constraintLeft_toRightOf="@+id/tvTemp"
-                    app:layout_constraintTop_toTopOf="@+id/tvTemp" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvTemp">
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </LinearLayout>
 
                     <TextView
-                        android:id="@+id/tvAddressLine"
+                        android:id="@+id/tvTemp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        tools:text="@string/placeHolderLocation" />
+                        android:fontFamily="sans-serif-light"
+                        android:textDirection="ltr"
+                        android:textSize="130sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.501"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+                        tools:text="@string/placeHolderTemp" />
 
-                    <LinearLayout
-                        android:id="@+id/linearLayout3"
+                    <TextView
+                        android:id="@+id/tvTempUnit"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="5dp"
-                            android:layout_weight="1"
-                            android:text="@string/sunset" />
-
-                        <TextView
-                            android:id="@+id/tvSunset"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            tools:text="@string/placeHolderTime" />
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_marginHorizontal="5dp"
-                            android:layout_weight="1"
-                            android:scaleX=".5"
-                            android:scaleY=".5"
-                            app:srcCompat="@android:drawable/radiobutton_off_background"
-                            android:contentDescription="@string/divider" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="5dp"
-                            android:layout_weight="1"
-                            android:text="@string/sunrise" />
-
-                        <TextView
-                            android:id="@+id/tvSunrise"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            tools:text="@string/placeHolderTime" />
-                    </LinearLayout>
+                        android:layout_marginTop="30dp"
+                        android:fontFamily="sans-serif-light"
+                        android:text="@string/placeHolderTempUnit"
+                        android:textAlignment="gravity"
+                        android:textDirection="ltr"
+                        android:textSize="20sp"
+                        app:layout_constraintLeft_toRightOf="@+id/tvTemp"
+                        app:layout_constraintTop_toTopOf="@+id/tvTemp" />
 
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:padding="15dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif-light"
-                            android:text="@string/hourly"
-                            android:textSize="34sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="10dp"
-                            android:text="@string/details"
-                            android:textSize="34sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rvHourlyWeather"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:orientation="horizontal"
-                        android:overScrollMode="never"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-
-                        tools:itemCount="10"
-                        tools:listitem="@layout/item_time_temp">
-
-                    </androidx.recyclerview.widget.RecyclerView>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:padding="15dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif-light"
-                            android:text="@string/day"
-                            android:textSize="34sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="10dp"
-                            android:text="@string/details"
-                            android:textSize="34sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-
-                    <include
-                        android:id="@+id/incWeatherDetails"
-                        layout="@layout/item_day_details"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:padding="15dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif-light"
-                            android:text="@string/next"
-                            android:textSize="34sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="10dp"
-                            android:text="@string/_7_days"
-                            android:textSize="34sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rvDailyDetails"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:gravity="center_horizontal"
                         android:orientation="vertical"
-                        tools:itemCount="10"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tvTemp">
 
-                        tools:listitem="@layout/item_next_7_days" />
+                        <TextView
+                            android:id="@+id/tvAddressLine"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            tools:text="@string/placeHolderLocation" />
 
-                </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/linearLayout3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="5dp"
+                                android:layout_weight="1"
+                                android:text="@string/sunset" />
+
+                            <TextView
+                                android:id="@+id/tvSunset"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                tools:text="@string/placeHolderTime" />
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_marginHorizontal="5dp"
+                                android:layout_weight="1"
+                                android:contentDescription="@string/divider"
+                                android:scaleX=".5"
+                                android:scaleY=".5"
+                                app:srcCompat="@android:drawable/radiobutton_off_background" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="5dp"
+                                android:layout_weight="1"
+                                android:text="@string/sunrise" />
+
+                            <TextView
+                                android:id="@+id/tvSunrise"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                tools:text="@string/placeHolderTime" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:padding="15dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif-light"
+                                android:text="@string/hourly"
+                                android:textSize="34sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="10dp"
+                                android:text="@string/details"
+                                android:textSize="34sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvHourlyWeather"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal"
+                            android:overScrollMode="never"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+
+                            tools:itemCount="10"
+                            tools:listitem="@layout/item_time_temp">
+
+                        </androidx.recyclerview.widget.RecyclerView>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:padding="15dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif-light"
+                                android:text="@string/day"
+                                android:textSize="34sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="10dp"
+                                android:text="@string/details"
+                                android:textSize="34sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <include
+                            android:id="@+id/incWeatherDetails"
+                            layout="@layout/item_day_details"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:padding="15dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif-light"
+                                android:text="@string/next"
+                                android:textSize="34sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="10dp"
+                                android:text="@string/_7_days"
+                                android:textSize="34sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvDailyDetails"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            tools:itemCount="10"
+
+                            tools:listitem="@layout/item_next_7_days" />
+
+                    </LinearLayout>
 
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <com.jetradarmobile.snowfall.SnowfallView
+                    android:id="@+id/rainy"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="visible"
+                    app:snowflakeAlphaMax="60"
+                    app:snowflakeAlphaMin="40"
+                    app:snowflakeAngleMax="5"
+                    app:snowflakeSizeMax="2dp"
+                    app:snowflakeSizeMin="1dp"
+                    app:snowflakeSpeedMax="25"
+                    app:snowflakeSpeedMin="10"
+                    app:snowflakesAlreadyFalling="true"
+                    app:snowflakesFadingEnabled="true"
+                    app:snowflakesNum="250" />
+
+                <com.jetradarmobile.snowfall.SnowfallView
+                    android:id="@+id/snow"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="visible"
+                    app:snowflakeAlphaMax="90"
+                    app:snowflakeAlphaMin="50"
+                    app:snowflakeAngleMax="5"
+                    app:snowflakeSizeMax="5dp"
+                    app:snowflakeSizeMin="2dp"
+                    app:snowflakeSpeedMax="5"
+                    app:snowflakeSpeedMin="1"
+                    app:snowflakesAlreadyFalling="true"
+                    app:snowflakesFadingEnabled="true"
+                    app:snowflakesNum="250" />
+            </FrameLayout>
 
         </FrameLayout>
     </androidx.core.widget.NestedScrollView>
