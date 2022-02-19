@@ -1,6 +1,8 @@
 # WEZY Android weather app
 
 WEZY is a simple weather forecast app, which uses some APIs to fetch 7 day forecast data from the OpenWeatherMap and to fetch places,cities,counties,coords etc. from Geocoder. The main goal of this app is to be a sample of how to build an high quality Android application that uses the Architecture components. in Kotlin.
+  
+<img src="screens/wezy_app.png" alt="1"/>
 
 ## Requirements
 
@@ -9,7 +11,7 @@ JDK 8
 Android SDK 32  
 Supports API Level +26
 
-<img src="screens/wezy_app.png" alt="1"/>
+
 
 ## Highlights
 
