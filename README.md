@@ -9,6 +9,8 @@ JDK 8
 Android SDK 32  
 Supports API Level +26
 
+<img src="screens/wezy_app.png" alt="1"/>
+
 ## Highlights
 
 Use OpenWeatherMap API  
