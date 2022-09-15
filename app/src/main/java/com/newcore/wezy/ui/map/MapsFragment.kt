@@ -1,13 +1,9 @@
 package com.newcore.wezy.ui.map
 
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI.navigateUp
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -21,7 +17,8 @@ import com.newcore.wezy.WeatherApplication
 import com.newcore.wezy.databinding.FragmentMapsBinding
 import com.newcore.wezy.ui.BaseFragment
 import com.newcore.wezy.ui.MainActivity
-import com.newcore.wezy.utils.Resource
+import com.demo.core.utils.Resource
+import com.demo.data.shareprefrances.DefineLocationType
 
 open class MapsFragment : BaseFragment<FragmentMapsBinding>(FragmentMapsBinding::inflate) ,OnMapReadyCallback {
     private lateinit var googleMap:GoogleMap;
@@ -118,7 +115,7 @@ open class MapsFragment : BaseFragment<FragmentMapsBinding>(FragmentMapsBinding:
 
     open fun onButtonClick(latLng:LatLng?){
         if(latLng!=null){
-            viewModel.updateSettingsLocation(latLng)
+            viewModel.updateSettingsLocation(latLng,DefineLocationType.Maps)
         }
         findNavController().popBackStack()
     }

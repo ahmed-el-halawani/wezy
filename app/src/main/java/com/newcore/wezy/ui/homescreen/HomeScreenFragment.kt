@@ -1,7 +1,5 @@
 package com.newcore.wezy.ui.homescreen
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -12,24 +10,22 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.room.Room
 import com.bumptech.glide.Glide
-import com.google.android.material.snackbar.Snackbar
 import com.newcore.wezy.R
 import com.newcore.wezy.WeatherApplication
 import com.newcore.wezy.databinding.FragmentHomeScreenBinding
 import com.newcore.wezy.localDb.WeatherDatabase
 import com.newcore.wezy.repository.WeatherRepo
-import com.newcore.wezy.shareprefrances.SettingsPreferences
+import com.demo.data.shareprefrances.SettingsPreferences
 import com.newcore.wezy.ui.BaseFragment
-import com.newcore.wezy.utils.ApiViewHelper
-import com.newcore.wezy.utils.Resource
-import com.newcore.wezy.utils.ViewHelpers
-import com.newcore.wezy.utils.ViewHelpers.convertFromKelvin
-import com.newcore.wezy.utils.ViewHelpers.getStringSpeedUnit
-import com.newcore.wezy.utils.ViewHelpers.numberLocalizer
-import com.newcore.wezy.utils.ViewHelpers.showRainOrSnowOrNot
-import com.newcore.wezy.utils.ViewHelpers.windSpeedFromMeterBerSecond
+import com.demo.core.utils.ApiViewHelper
+import com.demo.core.utils.Resource
+import com.newcore.wezy.ui.utils.ViewHelpers
+import com.newcore.wezy.ui.utils.ViewHelpers.convertFromKelvin
+import com.newcore.wezy.ui.utils.ViewHelpers.getStringSpeedUnit
+import com.newcore.wezy.ui.utils.ViewHelpers.numberLocalizer
+import com.newcore.wezy.ui.utils.ViewHelpers.showRainOrSnowOrNot
+import com.newcore.wezy.ui.utils.ViewHelpers.windSpeedFromMeterBerSecond
 import kotlinx.coroutines.*
 import java.util.*
 

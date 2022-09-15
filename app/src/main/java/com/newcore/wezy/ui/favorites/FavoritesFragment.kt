@@ -7,18 +7,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.material.snackbar.Snackbar
 import com.newcore.wezy.R
 import com.newcore.wezy.WeatherApplication
 import com.newcore.wezy.databinding.FragmentFavoriteBinding
 import com.newcore.wezy.localDb.WeatherDatabase
 import com.newcore.wezy.repository.WeatherRepo
-import com.newcore.wezy.shareprefrances.SettingsPreferences
+import com.demo.data.shareprefrances.SettingsPreferences
 import com.newcore.wezy.ui.BaseFragment
-import com.newcore.wezy.utils.Constants.HOME_WEATHER_ID
-import com.newcore.wezy.utils.Extensions.where
-import com.newcore.wezy.utils.ILoading
-import com.newcore.wezy.utils.ViewHelpers
+import com.demo.core.utils.Constants.HOME_WEATHER_ID
+import com.newcore.wezy.ui.utils.ViewHelpers
 
 class FavoritesFragment
     : BaseFragment<FragmentFavoriteBinding>(FragmentFavoriteBinding::inflate) {

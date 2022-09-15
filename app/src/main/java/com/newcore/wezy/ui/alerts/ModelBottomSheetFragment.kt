@@ -17,12 +17,10 @@ import com.newcore.wezy.R
 import com.newcore.wezy.WeatherApplication
 import com.newcore.wezy.databinding.IncludeAddAlertBottomSheetBinding
 import com.newcore.wezy.localDb.WeatherDatabase
-import com.newcore.wezy.models.MyAlert
 import com.newcore.wezy.repository.WeatherRepo
-import com.newcore.wezy.shareprefrances.SettingsPreferences
-import com.newcore.wezy.utils.ViewHelpers
+import com.demo.data.shareprefrances.SettingsPreferences
+import com.newcore.wezy.ui.utils.ViewHelpers
 import kotlinx.coroutines.launch
-import okhttp3.internal.notify
 import java.util.*
 
 private fun Calendar.setHourMinute(hourOfDay: Int, minute: Int): Calendar {

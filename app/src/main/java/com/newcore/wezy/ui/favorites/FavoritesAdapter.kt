@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.newcore.wezy.WeatherApplication
 import com.newcore.wezy.databinding.ItemFavoriteBinding
 import com.newcore.wezy.models.weatherentities.WeatherLang
-import com.newcore.wezy.shareprefrances.SettingsPreferences
-import com.newcore.wezy.utils.ViewHelpers.getWeatherFromWeatherLang
+import com.demo.data.shareprefrances.SettingsPreferences
+import com.newcore.wezy.ui.utils.ViewHelpers.getWeatherFromWeatherLang
 
 class FavoritesAdapter : RecyclerView.Adapter<FavoritesAdapter.ViewHolder>() {
     data class ViewHolder(val binding: ItemFavoriteBinding) : RecyclerView.ViewHolder(binding.root)

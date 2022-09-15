@@ -8,7 +8,7 @@ import com.newcore.wezy.models.MyAlert
 import com.newcore.wezy.repository.WeatherRepo
 import com.newcore.wezy.services.LongRunningWorker
 import com.newcore.wezy.services.StopAlarmBroadcast
-import com.newcore.wezy.utils.Constants
+import com.demo.core.utils.Constants
 import kotlinx.coroutines.launch
 import java.time.Duration
 import java.util.*

@@ -12,8 +12,8 @@ import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.snackbar.Snackbar
 import com.newcore.wezy.R
-import com.newcore.wezy.utils.ILoading
-import com.newcore.wezy.utils.INetwork
+import com.demo.core.utils.*
+
 
 abstract class BaseFragment<T : ViewBinding>(val viewBindingInflater:(LayoutInflater)->T): Fragment(),
     ILoading {

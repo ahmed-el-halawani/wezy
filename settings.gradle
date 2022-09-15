@@ -16,3 +16,6 @@ dependencyResolutionManagement {
 }
 rootProject.name = "wezy"
 include ':app'
+include ':Data'
+include ':Domain'
+include ':Core'

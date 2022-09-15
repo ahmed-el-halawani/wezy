@@ -3,18 +3,23 @@ package com.newcore.wezy.ui
 import android.location.Geocoder
 import android.util.Log
 import androidx.lifecycle.*
+import com.demo.core.utils.Constants
 import com.google.android.gms.maps.model.LatLng
 import com.newcore.wezy.WeatherApplication
 import com.newcore.wezy.models.weatherentities.WeatherLang
 import com.newcore.wezy.repository.RepoErrors
 import com.newcore.wezy.repository.WeatherRepo
 import com.newcore.wezy.services.ReCallService
-import com.newcore.wezy.shareprefrances.MLocation
-import com.newcore.wezy.shareprefrances.Settings
+import com.demo.data.shareprefrances.MLocation
+import com.demo.data.shareprefrances.Settings
 import com.newcore.wezy.ui.homescreen.WeatherState
-import com.newcore.wezy.utils.*
-import com.newcore.wezy.utils.Constants.INTERNET_NOT_WORKING
-import com.newcore.wezy.utils.Constants.INTERNET_WORKING
+import com.demo.core.utils.*
+import com.demo.core.utils.Constants.INTERNET_NOT_WORKING
+import com.demo.core.utils.Constants.INTERNET_WORKING
+import com.demo.core.utils.Either
+import com.demo.core.utils.Resource
+import com.demo.data.shareprefrances.DefineLocationType
+import com.newcore.wezy.ui.utils.ViewHelpers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -24,7 +29,7 @@ import java.util.*
 class AppStateViewModel(val application: WeatherApplication, private val weatherRepo: WeatherRepo) :
     AndroidViewModel(application) {
 
-    var isLoaded =false
+    var isLoaded = false
 
     var settingsMutableLiveData = MutableLiveData<Settings>()
 
@@ -55,7 +60,7 @@ class AppStateViewModel(val application: WeatherApplication, private val weather
             withContext(Dispatchers.Main) {
                 weatherLangLiveData.postValue(weatherState)
             }
-            if (!hasInternet())  {
+            if (!hasInternet()) {
                 ReCallService.recall(
                     Constants.GET_OR_REFRESH_HOME_WITH_DATA,
                     {
@@ -144,7 +149,7 @@ class AppStateViewModel(val application: WeatherApplication, private val weather
         }
     }
 
-    fun updateSettingsLocation(latLng: LatLng) {
+    fun updateSettingsLocation(latLng: LatLng,locationType: DefineLocationType) {
 
         try {
             val mLocation = MLocation(latLng, "", "")
@@ -163,7 +168,7 @@ class AppStateViewModel(val application: WeatherApplication, private val weather
 //                )
 //            }
 
-            updateSettings { it.copy(location = mLocation) }
+            updateSettings { it.copy(location = mLocation, defineLocationType = locationType) }
         } catch (t: Throwable) {
             Log.e("updateSettingsLocation", t.message ?: "")
         }
@@ -179,7 +184,6 @@ class AppStateViewModel(val application: WeatherApplication, private val weather
                     Locale("ar"),
                     Locale("en")
                 )
-
 
 
             val geocoder = Geocoder(application, locale)

@@ -9,8 +9,8 @@ import androidx.work.WorkManager
 import com.newcore.wezy.WeatherApplication
 import com.newcore.wezy.localDb.WeatherDatabase
 import com.newcore.wezy.repository.WeatherRepo
-import com.newcore.wezy.shareprefrances.SettingsPreferences
-import com.newcore.wezy.utils.Constants.EXTRA_NOTIFICATION_ID_CUSTOM
+import com.demo.data.shareprefrances.SettingsPreferences
+import com.demo.core.utils.Constants.EXTRA_NOTIFICATION_ID_CUSTOM
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

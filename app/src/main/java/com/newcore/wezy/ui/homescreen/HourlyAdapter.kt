@@ -8,13 +8,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.newcore.wezy.WeatherApplication
 import com.newcore.wezy.databinding.ItemTimeTempBinding
-import com.newcore.wezy.models.weatherentities.Daily
 import com.newcore.wezy.models.weatherentities.Hourly
-import com.newcore.wezy.shareprefrances.SettingsPreferences
-import com.newcore.wezy.utils.ApiViewHelper
-import com.newcore.wezy.utils.ViewHelpers
-import com.newcore.wezy.utils.ViewHelpers.convertFromKelvin
-import com.newcore.wezy.utils.ViewHelpers.numberLocalizer
+import com.demo.data.shareprefrances.SettingsPreferences
+import com.demo.core.utils.ApiViewHelper
+import com.newcore.wezy.ui.utils.ViewHelpers
+import com.newcore.wezy.ui.utils.ViewHelpers.convertFromKelvin
+import com.newcore.wezy.ui.utils.ViewHelpers.numberLocalizer
 
 class HourlyAdapter : RecyclerView.Adapter<HourlyAdapter.ViewHolder>() {
     data class ViewHolder(val binding: ItemTimeTempBinding) : RecyclerView.ViewHolder(binding.root)

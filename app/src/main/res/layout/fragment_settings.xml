@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -76,7 +76,6 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:checked="true"
                             android:text="@string/arabic"
                             android:textSize="16sp"
                             tools:ignore="TouchTargetSizeCheck,TouchTargetSizeCheck" />
@@ -95,6 +94,8 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:checked="true"
+
                             android:minHeight="48dp"
                             android:text="@string/default_language"
                             android:textSize="16sp" />
@@ -166,6 +167,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:checked="true"
                             android:minHeight="48dp"
                             android:text="@string/kelvin"
                             android:textSize="16sp" />
@@ -238,8 +240,8 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:checked="true"
                             android:minHeight="48dp"
-
                             android:text="@string/gps"
                             android:textSize="16sp" />
 
@@ -312,8 +314,8 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:checked="true"
                             android:minHeight="48dp"
-
                             android:text="@string/meter_sec"
                             android:textSize="16sp" />
 
@@ -407,4 +409,4 @@
 
         </LinearLayout>
     </ScrollView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

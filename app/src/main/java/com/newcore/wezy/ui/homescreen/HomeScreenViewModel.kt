@@ -3,20 +3,14 @@ package com.newcore.wezy.ui.homescreen
 import androidx.lifecycle.*
 import com.newcore.wezy.WeatherApplication
 import com.newcore.wezy.models.weatherentities.WeatherLang
-import com.newcore.wezy.models.weatherentities.WeatherResponse
-import com.newcore.wezy.repository.RepoErrors
+import com.demo.data.models.weatherentities.WeatherResponse
 import com.newcore.wezy.repository.WeatherRepo
-import com.newcore.wezy.services.ReCallService
-import com.newcore.wezy.shareprefrances.Language
-import com.newcore.wezy.shareprefrances.MLocation
-import com.newcore.wezy.shareprefrances.Settings
+import com.demo.data.shareprefrances.Language
+import com.demo.data.shareprefrances.MLocation
+import com.demo.data.shareprefrances.Settings
 import com.newcore.wezy.ui.AppStateViewModel
-import com.newcore.wezy.utils.Constants.GET_OR_REFRESH_HOME_WITH_DATA
-import com.newcore.wezy.utils.Either
-import com.newcore.wezy.utils.ViewHelpers
-import kotlinx.coroutines.Dispatchers
+import com.newcore.wezy.ui.utils.ViewHelpers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class HomeScreenViewModel(
     val application: WeatherApplication,
@@ -31,7 +25,6 @@ class HomeScreenViewModel(
 
 
     init {
-        println("i am here mather faker")
         location = appStateViewModel.getSettings().location;
         language = appStateViewModel.getSettings().language;
         settings = appStateViewModel.getSettings()
@@ -41,21 +34,6 @@ class HomeScreenViewModel(
 
         appStateViewModel.getHomeWeather(appStateViewModel.getSettings().location)
         afterFinish?.invoke()
-    }
-
-    fun locationChanged2(settings: Settings):Boolean {
-        if (settings == this.settings)
-            return false;
-
-        return if (settings.location?.latLng?.latitude != location?.latLng?.latitude ||
-            settings.location?.latLng?.longitude != location?.latLng?.longitude) {
-            location = settings.location;
-            false
-        }
-        else{
-            this.settings = settings
-            true
-        }
     }
 
     fun locationChanged(settings: Settings):Boolean {

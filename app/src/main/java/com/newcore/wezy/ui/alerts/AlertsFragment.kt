@@ -9,15 +9,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.snackbar.Snackbar
 import com.newcore.wezy.R
 import com.newcore.wezy.WeatherApplication
 import com.newcore.wezy.databinding.FragmentAlertsBinding
 import com.newcore.wezy.localDb.WeatherDatabase
 import com.newcore.wezy.repository.WeatherRepo
-import com.newcore.wezy.shareprefrances.SettingsPreferences
+import com.demo.data.shareprefrances.SettingsPreferences
 import com.newcore.wezy.ui.BaseFragment
-import com.newcore.wezy.utils.ViewHelpers
+import com.newcore.wezy.ui.utils.ViewHelpers
 import kotlinx.coroutines.launch
 
 

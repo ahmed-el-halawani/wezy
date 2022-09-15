@@ -8,10 +8,9 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.newcore.wezy.R
 import com.newcore.wezy.databinding.FragmentSettingsBinding
-import com.newcore.wezy.shareprefrances.*
+import com.demo.data.shareprefrances.*
 import com.newcore.wezy.ui.BaseFragment
-import com.newcore.wezy.utils.Resource
-import com.newcore.wezy.utils.ViewHelpers
+import com.demo.core.utils.Resource
 
 
 class SettingsFragment
@@ -20,10 +19,6 @@ class SettingsFragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupSettings()
-
-       binding.apply {
-
-       }
 
     }
 

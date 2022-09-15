@@ -6,16 +6,14 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.media.MediaPlayer
 import android.os.Bundle
-import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.newcore.wezy.R
 import com.newcore.wezy.databinding.ActivityNotificationBinding
 import com.newcore.wezy.services.StopAlarmBroadcast
-import com.newcore.wezy.utils.Constants.ALERT_BODY
-import com.newcore.wezy.utils.Constants.ALERT_COUNTRY
-import com.newcore.wezy.utils.Constants.ALERT_TITLE
-import com.newcore.wezy.utils.Constants.EXTRA_NOTIFICATION_ID_CUSTOM
+import com.demo.core.utils.Constants.ALERT_BODY
+import com.demo.core.utils.Constants.ALERT_COUNTRY
+import com.demo.core.utils.Constants.ALERT_TITLE
+import com.demo.core.utils.Constants.EXTRA_NOTIFICATION_ID_CUSTOM
 import com.tapadoo.alerter.Alerter
 
 

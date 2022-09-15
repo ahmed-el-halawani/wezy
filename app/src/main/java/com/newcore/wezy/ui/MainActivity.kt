@@ -4,15 +4,10 @@ import android.Manifest
 import android.app.*
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
-import android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION
-import android.provider.Settings.canDrawOverlays
 import android.util.Log
 import android.view.View
-import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.MutableLiveData
@@ -28,19 +23,19 @@ import com.newcore.wezy.WeatherApplication
 import com.newcore.wezy.databinding.ActivityMainBinding
 import com.newcore.wezy.localDb.WeatherDatabase
 import com.newcore.wezy.repository.WeatherRepo
-import com.newcore.wezy.shareprefrances.Language
-import com.newcore.wezy.shareprefrances.SettingsPreferences
-import com.newcore.wezy.utils.Constants.CHANNEL_ID
-import com.newcore.wezy.utils.Constants.INTERNET_NOT_WORKING
-import com.newcore.wezy.utils.Extensions.setupWithNavController2
-import com.newcore.wezy.utils.INetwork
-import com.newcore.wezy.utils.Resource
-import com.newcore.wezy.utils.ViewHelpers
+import com.demo.data.shareprefrances.Language
+import com.demo.data.shareprefrances.SettingsPreferences
+import com.demo.core.utils.Constants.CHANNEL_ID
+import com.demo.core.utils.Constants.INTERNET_NOT_WORKING
+import com.demo.core.utils.Extensions.setupWithNavController2
+import com.demo.core.utils.INetwork
+import com.demo.core.utils.Resource
+import com.demo.data.shareprefrances.DefineLocationType
+import com.newcore.wezy.ui.utils.ViewHelpers
 import kotlinx.coroutines.*
-import java.time.Duration
 
 data class ActivityResultData(val requestCode: Int, val resultCode: Int, val data: Intent?)
-data class ActivityPermissionResultData(val requestCode: Int, val permissions: Array<out String>,val grantResults: IntArray) {
+data class ActivityPermissionResultData(val requestCode: Int, val permissions: Array<out String>, val grantResults: IntArray) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -73,7 +68,6 @@ class MainActivity : AppCompatActivity(), INetwork {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupNotificationChanel()
-
 
 
 //
@@ -117,10 +111,10 @@ class MainActivity : AppCompatActivity(), INetwork {
         ViewModelProvider(this, viewModelFactory)[AppStateViewModel::class.java]
     }
 
-    fun showSnackbar(message: String? = null, undoAction: View.OnClickListener? = null,anchorViews:View?) {
+    fun showSnackbar(message: String? = null, undoAction: View.OnClickListener? = null, anchorViews: View?) {
         Snackbar.make(binding.newsNavHostFragment, message ?: "", Snackbar.LENGTH_LONG).apply {
             undoAction?.let { setAction("UNDO", it) }
-            anchorView = anchorViews?:binding.bottomNavigationView;
+            anchorView = anchorViews ?: binding.bottomNavigationView;
             show()
         }
     }
@@ -161,7 +155,7 @@ class MainActivity : AppCompatActivity(), INetwork {
                     super.onLocationResult(location)
                     hideLoading()
                     appStateViewModel.updateSettingsLocation(
-                        LatLng(location.locations[0].latitude, location.locations[0].longitude)
+                        LatLng(location.locations[0].latitude, location.locations[0].longitude), DefineLocationType.Gps,
                     )
                 }
             },
@@ -217,17 +211,17 @@ class MainActivity : AppCompatActivity(), INetwork {
                 else
                     hideNoInternet()
             }
-        }catch (t:Throwable){
-            Log.e("internetStateObserver", "internetStateObserver: "+t.message )
+        } catch (t: Throwable) {
+            Log.e("internetStateObserver", "internetStateObserver: " + t.message)
         }
 
     }
 
     private fun splashScreenFadeOutAnimation() {
-        if(!appStateViewModel.isLoaded)
+        if (!appStateViewModel.isLoaded)
             CoroutineScope(Dispatchers.IO).launch {
                 delay(500)
-                withContext(Dispatchers.Main){
+                withContext(Dispatchers.Main) {
 
                     binding.clHomeView.animate()
                         .alpha(1f).duration = 800
@@ -279,20 +273,18 @@ class MainActivity : AppCompatActivity(), INetwork {
     }
 
 
-
-    private fun setupNotificationChanel(){
-            // Create the NotificationChannel
-            val name = getString(R.string.channel_name)
-            val descriptionText ="setting weather alarm"
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val mChannel = NotificationChannel(CHANNEL_ID, name, importance)
-            mChannel.description = descriptionText
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(mChannel)
+    private fun setupNotificationChanel() {
+        // Create the NotificationChannel
+        val name = getString(R.string.channel_name)
+        val descriptionText = "setting weather alarm"
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val mChannel = NotificationChannel(CHANNEL_ID, name, importance)
+        mChannel.description = descriptionText
+        // Register the channel with the system; you can't change the importance
+        // or other notification behaviors after this
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(mChannel)
     }
-
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -301,7 +293,6 @@ class MainActivity : AppCompatActivity(), INetwork {
 //        onActivityResult?.invoke(requestCode,resultCode,data);
 
         activityResultLiveData.postValue(ActivityResultData(requestCode, resultCode, data))
-
 
 
 //
@@ -349,11 +340,11 @@ class MainActivity : AppCompatActivity(), INetwork {
 
     }
 
-     fun showLoading(message:String?) {
-        dialog = ProgressDialog.show(this, "",message?:"Loading. Please wait...", true);
+    fun showLoading(message: String?) {
+        dialog = ProgressDialog.show(this, "", message ?: "Loading. Please wait...", true);
     }
 
-     fun hideLoading() {
+    fun hideLoading() {
         dialog?.dismiss()
     }
 

@@ -9,13 +9,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.maps.model.LatLng
 import com.newcore.wezy.R
 import com.newcore.wezy.WeatherApplication
-import com.newcore.wezy.repository.Utils
-import com.newcore.wezy.services.ReCallService
-import com.newcore.wezy.shareprefrances.MLocation
+import com.demo.data.repository.Utils
+import com.demo.data.shareprefrances.MLocation
 import com.newcore.wezy.ui.AppStateViewModel
-import com.newcore.wezy.utils.Constants
-import com.newcore.wezy.utils.Resource
-import com.newcore.wezy.utils.ViewHelpers
+import com.demo.core.utils.Resource
+import com.newcore.wezy.ui.utils.ViewHelpers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
